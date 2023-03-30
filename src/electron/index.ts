@@ -2,15 +2,19 @@ import {
   app,
   BrowserWindow,
   Notification,
+  ipcMain
   // nativeImage
 } from "electron";
 import { join } from "path";
 import { parse } from "url";
 import { autoUpdater } from "electron-updater";
 
+
 import logger from "./utils/logger";
 import settings from "./utils/settings";
 
+
+import { loadFileIpc, getMessagesIpc, test1 } from "./utils/ipcMain";
 const isProd = process.env.NODE_ENV === "production" || app.isPackaged;
 
 logger.info("App starting...");
@@ -49,6 +53,7 @@ const createWindow = () => {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
+  ipcMain.handle('test1',test1);
 };
 
 app.on("ready", createWindow);

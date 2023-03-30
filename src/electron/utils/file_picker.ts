@@ -1,5 +1,6 @@
 import { dialog } from "electron";
-import fs from "fs/promises";
+import {readFile} from 'fs/promises';
+
 import { join } from "path";
 
 export async function openFilePicker() {
@@ -14,14 +15,19 @@ export async function openFilePicker() {
     console.log("No file selected");
     return;
   }
-
-  const buffer = await fs.readFile(res.filePaths[0]);
+  const buffer = await readFile(res.filePaths[0]);
 
   return buffer;
 }
 
 export async function openTestFile() {
-  const buffer = await fs.readFile(join(__dirname.replace("build", "Ficheros_asterix"), "201002-lebl-080001_adsb.ast"));
+  const buffer = await readFile(join(__dirname.replace("build", "src/electron"), "201002-lebl-080001_adsb.ast"));
+  return buffer;
+}
+
+
+export async function readFile1(path : string) {
+  const buffer = await readFile(path);
   return buffer;
 }
 

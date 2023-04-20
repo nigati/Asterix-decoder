@@ -11,7 +11,7 @@ test('readingtest', async () => {
 
 
 
-    var data : Buffer = await readFile1("Ficheros_asterix/utils/201002-lebl-080001_mlat.ast");
+    var data : Buffer = await readFile1("Ficheros_asterix/utils/201002-lebl-080001_adsb.ast");
     console.log(data);
     var slicedData : Buffer[] = await block_slicer(data);
     console.log(slicedData);

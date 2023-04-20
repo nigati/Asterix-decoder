@@ -1,12 +1,12 @@
-export async function initIpcMainBidirectional(event: string) {
+export async function initIpcMain(event: string) {
     return await window.electron.sendAndReceive(event);
   }
   
-  export async function ipcMainBidirectional(event: string, data?: any) {
+  export async function ipcMainBi(event: string, data?: any) {
     return await window.electron.sendAndReceive(event, data);
   }
   
-  export function ipcMainOneDirection(event: string) {
+  export function ipcMainOD(event: string) {
     window.electron.send(event);
   }
   export async function parseInitIpcMain(msg: string) {

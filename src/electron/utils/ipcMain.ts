@@ -37,7 +37,7 @@ export async function loadFileIpc() {
   return L;
 }
 
-export async function loadMessages(event: any, messageQuantity: number) {
+export async function loadItems(event: any, messageQuantity: number) {
   decodedMsg = await classify_data(messages, messageQuantity, 0);
   console.log(decodedMsg);
 }

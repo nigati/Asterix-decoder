@@ -22,9 +22,32 @@
 
 <script lang="ts">
   export let name: string;
+
+  export let rows = ![];
+  export let columns = ![];
+
+  const selected = null;
 </script>
 
+
+
 <main>
-  <h1>Hello {name}!</h1>
-  <p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+  <table>
+    <thead>
+      <tr>
+        {#each columns as column}
+          <th>{column}</th>
+        {/each}
+      </tr>
+    </thead>
+    <tbody>
+      {#each rows as row}
+        <tr class:selected={row === selected}>
+          {#each Object.values(row) as cell}
+            <td>{cell}</td>
+          {/each}
+        </tr>
+      {/each}
+    </tbody>
+  </table>
 </main>

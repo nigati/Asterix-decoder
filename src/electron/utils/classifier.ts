@@ -37,7 +37,7 @@ export async function block_slicer(buffer:Buffer) {
     let blocks=[];
     while (k<buffer.length){
         const blocklen=buffer.subarray(i+1,i+3).readInt16BE();
-        k=i+blocklen+2;
+        k=i+blocklen;
         blocks.push(buffer.subarray(i,k));
         i=k;
 

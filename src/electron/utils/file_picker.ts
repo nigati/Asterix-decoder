@@ -3,7 +3,7 @@ import {readFile} from 'fs/promises';
 
 import { join } from "path";
 
-export async function openFilePicker() {
+export async function openFile() {
   console.log("File picker activated");
 
   const res = await dialog.showOpenDialog({

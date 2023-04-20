@@ -14,7 +14,8 @@ import logger from "./utils/logger";
 import settings from "./utils/settings";
 
 
-import { loadFileIpc, getMessagesIpc, test1 } from "./utils/ipcMain";
+import { loadFileIpc, loadMessages, test1 } from "./utils/ipcMain";
+import { openFile } from "./utils/file_picker";
 const isProd = process.env.NODE_ENV === "production" || app.isPackaged;
 
 logger.info("App starting...");
@@ -53,7 +54,8 @@ const createWindow = () => {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
-  ipcMain.handle('test1',test1);
+  ipcMain.handle('open-file',openFile);
+  ipcMain.handle('load-items',loadMessages)
 };
 
 app.on("ready", createWindow);

@@ -1,7 +1,7 @@
 import { Cat10 } from "../models/cat10";
 import { Cat21 } from "../models/cat21";
 import { classify_data, block_slicer } from "./classifier";
-import { openFilePicker, openTestFile } from "./file_picker";
+import { openFile, openTestFile } from "./file_picker";
 
 
 let buffer: Buffer | undefined;
@@ -20,7 +20,7 @@ export async function test1(){
 export async function loadFileIpc() {
 
   //const res = await openFilePicker();
-  const res = await openTestFile();
+  const res = await openFile();
   if (!res) return;
   buffer = res;
   messages = [];
@@ -37,7 +37,7 @@ export async function loadFileIpc() {
   return L;
 }
 
-export async function getMessagesIpc(event: any, messageQuantity: number) {
+export async function loadMessages(event: any, messageQuantity: number) {
   decodedMsg = await classify_data(messages, messageQuantity, 0);
   console.log(decodedMsg);
 }

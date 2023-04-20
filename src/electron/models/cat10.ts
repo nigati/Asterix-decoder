@@ -218,10 +218,10 @@ export class Cat10{
         const x_b = buffer.slice(0, 2);
         const y_b = buffer.slice(2, 4);
         const x = x_b.readInt16BE();
-        // console.log("X-coordinate: " + x_coord);
+        console.log("X-coordinate: " + x);
     
         const y = y_b.readInt16BE();
-        // console.log("Y-coordinate: " + y_coord);
+        console.log("Y-coordinate: " + y);
         this.position_in_cartesian = {
           x: x,
           y: y,
@@ -563,7 +563,7 @@ export class Cat10{
           ).toString(10) + " m";
         if (buffer.length === 1) {
           this.target_size_orientation = {
-            Lenght: length,
+            Length: length,
           };
           return;
         }
@@ -583,8 +583,8 @@ export class Cat10{
           ).toString(10) + " deg";
         if (buffer.length === 2) {
           this.target_size_orientation = {
-            Lenght: length,
-            Orinetation: orientation,
+            Length: length,
+            Orientation: orientation,
           };
     
           return;
@@ -600,8 +600,8 @@ export class Cat10{
             2
           ).toString(10) + " m";
         this.target_size_orientation = {
-          Lenght: length,
-          Orinetation: orientation,
+          Length: length,
+          Orientation: orientation,
           Width: width,
         };
       }
@@ -714,7 +714,7 @@ export class Cat10{
         this.std_pos = {
           X_component: x_component,
           Y_component: y_component,
-          Covariance: covariance,
+          Covar: covariance,
         };
       }
     
@@ -817,8 +817,8 @@ interface CalculatedAcceleration {
   }
   
   interface TargetSizeOrientation {
-    Lenght: string;
-    Orinetation?: string;
+    Length: string;
+    Orientation?: string;
     Width?: string;
   }
   
@@ -835,7 +835,7 @@ interface CalculatedAcceleration {
   interface StdPos {
     X_component: string;
     Y_component: string;
-    Covariance: string;
+    Covar: string;
   }
   
   interface SysStatus {

@@ -1,12 +1,13 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { test1 } from "./ipcMain";
 
-contextBridge.exposeInMainWorld('versions', {
-  node: () => process.versions.node,
-  chrome: () => process.versions.chrome,
-  electron: () => process.versions.electron,
-  
-
-
-  // we can also expose variables, not just functions
-})
+contextBridge.exposeInMainWorld("electron", {
+  send: (channel: string, data: any) => {
+    ipcRenderer.send(channel, data);
+  },
+  sendSync: (channel: string, data: any) => {
+    ipcRenderer.sendSync(channel, data);
+  },
+  sendAndReceive: async (channel: string, data: any) => ipcRenderer.invoke(channel, data),
+ 
+  pushNotification: (callback: any) => ipcRenderer.on("push-notification", callback),
+});

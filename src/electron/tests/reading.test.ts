@@ -15,7 +15,7 @@ test('readingtest', async () => {
     console.log(data);
     var slicedData : Buffer[] = await block_slicer(data);
     console.log(slicedData);
-    var messageList : (Cat10 | Cat21)[] = await classify_data(slicedData,slicedData.length,0);
+    var messageList : (Cat10 | Cat21)[] = await classify_data(slicedData,slicedData.length,-1);
     console.log(messageList.length);
     
    

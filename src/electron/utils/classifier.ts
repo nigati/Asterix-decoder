@@ -38,9 +38,8 @@ export async function block_slicer(buffer:Buffer) {
     while (k<buffer.length){
         const blocklen=buffer.subarray(i+1,i+3).readInt16BE();
         k=i+blocklen;
-        blocks.push(buffer.subarray(i,k));
+        blocks.push(buffer.slice(i,k));
         i=k;
-
     }
     return blocks;
 }
@@ -222,7 +221,7 @@ export async function decodeClass10Messages(msg: Buffer, id: number): Promise<Ca
   export async function decodeClass21Messages(msg: Buffer, id: number): Promise<Cat21> {
     msg = Buffer.from(msg);
     
-    let decod_msg =new Cat21;
+    let decod_msg =new Cat21(id);
     return decod_msg;
     
     

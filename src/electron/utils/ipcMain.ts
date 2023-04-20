@@ -5,16 +5,16 @@ import { openFile, openTestFile } from "./file_picker";
 
 
 let buffer: Buffer | undefined;
-let messages: Buffer[];
-let decodedMsg: (Cat10 | Cat21)[];
-let msgDelivered = 0;
+let items: Buffer[];
+let decodedItems: (Cat10 | Cat21)[];
+let itemsDelivered = 0;
 
 
 export async function test1(){
   let messageq= loadFileIpc();
-  decodedMsg = await classify_data(messages, messages.length,0);
-  console.log(decodedMsg);
-  return decodedMsg;
+  decodedItems = await classify_data(items, items.length,0);
+  console.log(decodedItems);
+  return decodedItems;
 
 }
 export async function loadFileIpc() {
@@ -23,21 +23,24 @@ export async function loadFileIpc() {
   const res = await openFile();
   if (!res) return;
   buffer = res;
-  messages = [];
-  decodedMsg = [];
-  msgDelivered = 0;
+  items = [];
+  decodedItems = [];
+  itemsDelivered = 0;
 
   if (!buffer) {
     console.log("No file opened");
     return;
   }
 
-  messages = await block_slicer(buffer);
-  let L = messages.length > 5000000 ? 300000 : messages.length;;
+  items = await block_slicer(buffer);
+  let L = items.length > 5000000 ? 300000 : items.length;;
   return L;
 }
 
-export async function loadItems(event: any, messageQuantity: number) {
-  decodedMsg = await classify_data(messages, messageQuantity, 0);
-  console.log(decodedMsg);
+export async function loadItems(event: any, itemQuantity: number) {
+  decodedItems = await classify_data(items, itemQuantity, 0);
+  console.log(decodedItems);
+  const readyItems = decodedItems.slice(itemsDelivered, itemsDelivered +itemQuantity);
+  return await JSON.stringify(readyItems);
+  
 }

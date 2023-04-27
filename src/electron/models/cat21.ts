@@ -69,6 +69,7 @@ export class Cat21{
     Mode_3A_Code_age: number;
     Target_Report_Descriptor_age: number;
     Aircraft_Operational_Status_age: number;
+    /* set_time_ASTERIX_report_transmission: any; */
 
     constructor(id: number) {
         this.id = id;

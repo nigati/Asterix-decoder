@@ -20,34 +20,77 @@
   }
 </style>
 
-<script lang="ts">
-  export let name: string;
+<script lang="ts" type="module">
+  import type { Cat10 } from "../electron/models/cat10";
+  import type { Cat21 } from "../electron/models/cat21";
+  import { initIpcMain, ipcMainBi,parseIpcMainReceiveMessage } from "./ipcMain";
+  
 
-  export let rows = ![];
-  export let columns = ![];
-
-  const selected = null;
+  let items: (Cat10|Cat21) []=[];
+  let items_len= 0;
+  let loading=false;
+  async function handleLoadSomeItems() {
+    items_len = Number.parseInt(await initIpcMain("open-file"));
+    if (!items_len) return;
+    
+    items = [];
+    loading = true;
+    console.log({ data_len: items_len });
+    const FRAGMENTS = 100000;
+    let i = 0;
+    await ipcMainBi("load-items", 10000);
+    while (i < items_len) {
+      const items1 = await ipcMainBi("slice-em-up");
+      items = items.concat(await parseIpcMainReceiveMessage(items1));
+      i += FRAGMENTS;
+    }
+  
+    loading = false;
+  }
 </script>
 
 
-
-<main>
-  <table>
-    <thead>
-      <tr>
-        {#each columns as column}
-          <th>{column}</th>
-        {/each}
-      </tr>
-    </thead>
-    <tbody>
-      {#each rows as row}
-        <tr class:selected={row === selected}>
-          {#each Object.values(row) as cell}
-            <td>{cell}</td>
-          {/each}
+ <main>
+  <h1>ASTERIX DECODER</h1>
+  <button type="button" class="btn btn-primary file-button" on:click="{handleLoadSomeItems}"
+      >Load File<i class="bi bi-folder2-open"></i></button
+    >  
+    <table>
+      
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Class</th>
+          <th>Instrument</th>
+          <th>Message Type / Target Id</th>
+          <th>Data source identifier</th>
+          <th>Timestamp</th>
         </tr>
-      {/each}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {#each items as item}
+          {#if item.cat === "Cat10" }
+            <tr class:smr={item.instrument === 'SMR'} class:mlat={item.instrument === 'MLAT'}>
+              <td>{item.id}</td>
+              <td>{item.cat}</td>
+              <td>{item.instrument}</td>
+              <td>{item.message_type}</td>
+              <td>{item.data_src_id.SIC}</td>
+              <td>{item.time_of_day}</td>
+            </tr>
+          {:else}
+            <tr>
+              <td>{item.id}</td>
+              <td>{item.cat}</td>
+              <td>{item.instrument}</td>
+              <td>{item.target_identification}</td>
+              <td>{`SIC: ${item.data_source_identification.SIC}; SAC: ${item.data_source_identification.SAC}`}</td>
+              <td>{new Date(item.time_report_transmission * 1000).toISOString().substring(11, 23)}</td>
+            </tr>
+            {/if}
+        {/each}
+      </tbody>
+     </table>
 </main>
+
+

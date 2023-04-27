@@ -14,7 +14,7 @@ import logger from "./utils/logger";
 import settings from "./utils/settings";
 
 
-import { loadFileIpc, loadItems, test1 } from "./utils/ipcMain";
+import { loadFileIpc, loadItems, loadItemsSlave, sliceItems, test1 } from "./utils/ipcMain";
 import { openFile } from "./utils/file_picker";
 const isProd = process.env.NODE_ENV === "production" || app.isPackaged;
 
@@ -54,8 +54,9 @@ const createWindow = () => {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
-  ipcMain.handle('open-file',openFile);
-  ipcMain.handle('load-items',loadItems)
+  ipcMain.handle('open-file',loadFileIpc);
+  ipcMain.handle('load-items',loadItemsSlave);
+  ipcMain.handle('slice-em-up',sliceItems);
 };
 
 app.on("ready", createWindow);

@@ -6,9 +6,5 @@
   </style>
 
 <script lang="ts">
-    import type { Cat10 } from "../models/cat10";
 
-
-
-    
     </script>

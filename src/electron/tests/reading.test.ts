@@ -11,11 +11,11 @@ test('readingtest', async () => {
 
 
 
-    var data : Buffer = await readFile1("Ficheros_asterix/utils/201002-lebl-080001_smr_mlat_adsb.ast");
+    var data : Buffer = await readFile1("Ficheros_asterix/utils/201002-lebl-080001_mlat.ast");
     console.log(data);
     var slicedData : Buffer[] = await block_slicer(data);
     console.log(slicedData);
-    var messageList : (Cat10 | Cat21)[] = await classify_data(slicedData,10,-1);
+    var messageList : (Cat10 | Cat21)[] = await classify_data(slicedData,slicedData.length,-1);
     console.log(messageList.length);
     
    

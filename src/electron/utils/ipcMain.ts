@@ -47,7 +47,7 @@ export async function loadItems(event: any, itemQuantity: number) {
 }
 
 export function sliceItems() {
-  const FRAGMENTS = 100;
+  const FRAGMENTS = 1000;
   const result = JSON.stringify(decodedItems.slice(itemsDelivered, itemsDelivered + FRAGMENTS));
   itemsDelivered += FRAGMENTS;
   if (itemsDelivered > decodedItems.length) itemsDelivered = 0;

@@ -5,6 +5,14 @@
     max-width: 240px;
     margin: 0 auto;
   }
+  .pagination ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
   th {
     color: black;
     font-size: medium;
@@ -42,9 +50,27 @@
 
   let items: (Cat10|Cat21) []=[];
   let items_len= 0;
+let page = 0;
+let totalPages: (Cat10|Cat21)[][] = [];
+let currentPageRows: (Cat10|Cat21)[] = [];
+  let itemsPerPage = 20;
+
   let loading=false;
 
+  $: currentPageRows = totalPages.length > 0 ? totalPages[page] : [];
+  $: console.log("Page is", page);
 
+  const paginate = (items: (Cat10|Cat21) []) => {
+  const pages = Math.ceil(items.length / itemsPerPage);
+
+  const paginatedItems = Array.from({ length: pages }, (_, index) => {
+    const start = index * itemsPerPage;
+    return items.slice(start, start + itemsPerPage);
+  });
+
+  console.log("paginatedItems are", paginatedItems);
+  totalPages = [...paginatedItems];
+};
   async function handleLoadSomeItems() {
     items_len = Number.parseInt(await initIpcMain("load-file"));
     if (!items_len) return;
@@ -52,9 +78,9 @@
     items = [];
     loading = true;
     console.log({ data_len: items_len });
-    const FRAGMENTS = 100000;
+    const FRAGMENTS = 100;
     let i = 0;
-    await ipcMainBi("load-items", 10000);
+    await ipcMainBi("load-items", 100);
     while (i < items_len) {
       const items1 = await ipcMainBi("slice-em-up");
       items = items.concat(await parseIpcMainReceiveMessage(items1));
@@ -62,7 +88,13 @@
     }
   
     loading = false;
+    paginate(items);
   }
+  const setPage = (p: number) => {
+  if (p >= 0 && p < totalPages.length) {
+    page = p;
+  }
+};
 </script>
 
 
@@ -81,7 +113,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each items as item}
+        {#each currentPageRows as item}
           {#if item.cat === "Cat10" }
             <tr class:smr={item.instrument === 'SMR'} class:mlat={item.instrument === 'MLAT'}>
               <td>{item.id}</td>
@@ -104,6 +136,83 @@
         {/each}
       </tbody>
      </table>
+     <nav class="pagination">
+      <ul>
+        <li>
+          <button
+            type="button"
+            class="btn-next-prev"
+            on:click={() => setPage(page - 1)}
+            disabled={page === 0}
+          >
+            PREV
+          </button>
+        </li>
+    
+        {#if page > 1}
+          <li>
+            <button
+              type="button"
+              class="btn-page-number"
+              on:click={() => setPage(0)}
+            >
+              1
+            </button>
+          </li>
+          <li><span class="ellipsis">...</span></li>
+        {/if}
+    
+        {#if page > 0}
+          <li>
+            <button
+              type="button"
+              class="btn-page-number"
+              on:click={() => setPage(page - 1)}
+            >
+              {page}
+            </button>
+          </li>
+        {/if}
+    
+        <li><span class="current-page">{page + 1}</span></li>
+    
+        {#if page < totalPages.length - 1}
+          <li>
+            <button
+              type="button"
+              class="btn-page-number"
+              on:click={() => setPage(page + 1)}
+            >
+              {page + 2}
+            </button>
+          </li>
+        {/if}
+    
+        {#if page < totalPages.length - 2}
+          <li><span class="ellipsis">...</span></li>
+          <li>
+            <button
+              type="button"
+              class="btn-page-number"
+              on:click={() => setPage(totalPages.length - 1)}
+            >
+              {totalPages.length}
+            </button>
+          </li>
+        {/if}
+    
+        <li>
+          <button
+            type="button"
+            class="btn-next-prev"
+            on:click={() => setPage(page + 1)}
+            disabled={page === totalPages.length - 1}
+          >
+            NEXT
+          </button>
+        </li>
+      </ul>
+    </nav>
 </main>
 
 

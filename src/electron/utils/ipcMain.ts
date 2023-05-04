@@ -58,17 +58,14 @@ export function sliceItems() {
 
 
 export async function loadItemsSlave(_event: any, _messageQuantity: number) {
-  const startTime = performance.now();
   const result = (await runSlave({ items })) as (Cat10 | Cat21)[];
-  const endTime = performance.now();
-  console.log(`Call to decodeMessages took ${endTime - startTime} milliseconds`);
+
   decodedItems = result;
 
   return [];
 }
 
 function runSlave(workerData: any) {
-  console.log(workerData.messages.length);
   return new Promise((resolve, reject) => {
     const worker = new Worker(__dirname + "/worker.js", { workerData });
     let result: (Cat10 | Cat21)[] = [];

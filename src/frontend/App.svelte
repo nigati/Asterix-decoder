@@ -5,6 +5,20 @@
     max-width: 240px;
     margin: 0 auto;
   }
+  th {
+    color: black;
+    font-size: medium;
+  }
+  
+  td {
+    color: black;
+    font-size: small;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 8px;
+  }
 
   h1 {
     color: #ff3e00;
@@ -29,8 +43,10 @@
   let items: (Cat10|Cat21) []=[];
   let items_len= 0;
   let loading=false;
+
+
   async function handleLoadSomeItems() {
-    items_len = Number.parseInt(await initIpcMain("open-file"));
+    items_len = Number.parseInt(await initIpcMain("load-file"));
     if (!items_len) return;
     
     items = [];
@@ -52,17 +68,14 @@
 
  <main>
   <h1>ASTERIX DECODER</h1>
-  <button type="button" class="btn btn-primary file-button" on:click="{handleLoadSomeItems}"
-      >Load File<i class="bi bi-folder2-open"></i></button
-    >  
+  <button type="button" class="btn btn-primary" on:click="{handleLoadSomeItems}">PICK FILE</button>  
     <table>
-      
       <thead>
         <tr>
           <th>Id</th>
           <th>Class</th>
           <th>Instrument</th>
-          <th>Message Type / Target Id</th>
+          <th>Target Id</th>
           <th>Data source identifier</th>
           <th>Timestamp</th>
         </tr>

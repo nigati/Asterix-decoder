@@ -28,11 +28,12 @@ let notification: Notification | null;
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 680,
+    width: 1200,
+    height: 800,
     webPreferences: {
       devTools: isProd ? false : true,
       contextIsolation: true,
+      preload: join(__dirname, "/utils/preload.js"),
     },
   });
 
@@ -54,7 +55,7 @@ const createWindow = () => {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
-  ipcMain.handle('open-file',loadFileIpc);
+  ipcMain.handle('load-file',loadFileIpc);
   ipcMain.handle('load-items',loadItemsSlave);
   ipcMain.handle('slice-em-up',sliceItems);
 };

@@ -43,10 +43,10 @@
 </style>
 
 <script lang="ts" type="module">
-  import type { Cat10 } from "../electron/models/cat10";
+    import type { Cat10 } from "../electron/models/cat10";
   import type { Cat21 } from "../electron/models/cat21";
   import { initIpcMain, ipcMainBi,parseIpcMainReceiveMessage } from "./ipcMain";
-  
+          
 
   let items: (Cat10|Cat21) []=[];
   let items_len= 0;
@@ -95,13 +95,44 @@ let currentPageRows: (Cat10|Cat21)[] = [];
     page = p;
   }
 };
+
+function htmlToCsv(filename: any){
+        var csv: string[] = [];
+        var rows = document.querySelectorAll("table tr");
+
+        for(var i=0;i<rows.length; i++){
+          var row=[];
+          var cols =rows[i].querySelectorAll("td,th");
+          for(var j=0;j<cols.length;j++){
+            row.push(cols[j].innerHTML);
+          }
+          csv.push(row.join(","));
+        }
+
+        downloadCSVFile(csv.join("\n"),filename);
+}
+
+function downloadCSVFile(csv: BlobPart,filename: string){
+        var csv_file;
+        var download_link;
+        csv_file = new Blob([csv], {type:"text/csv"});
+        download_link=document.createElement("a");
+        download_link.download = filename;
+        download_link.href = window.URL.createObjectURL(csv_file);
+        download_link.style.display = "none";
+        document.body.appendChild(download_link);
+        download_link.click();        
+      }
+
+
 </script>
 
 
  <main>
   <h1>ASTERIX DECODER</h1>
-  <button type="button" class="btn btn-primary" on:click="{handleLoadSomeItems}">PICK FILE</button>  
-    <table>
+  <button type="button" class="btn btn-primary" on:click="{handleLoadSomeItems}">PICK FILE</button> 
+  <br><br>
+    <table id="exportMe" class="table">
       <thead>
         <tr>
           <th>Id</th>
@@ -110,6 +141,7 @@ let currentPageRows: (Cat10|Cat21)[] = [];
           <th>Target Id</th>
           <th>Data source identifier</th>
           <th>Timestamp</th>
+          <th>Geometric height</th>
         </tr>
       </thead>
       <tbody>
@@ -131,11 +163,15 @@ let currentPageRows: (Cat10|Cat21)[] = [];
               <td>{item.target_identification}</td>
               <td>{`SIC: ${item.data_source_identification.SIC}; SAC: ${item.data_source_identification.SAC}`}</td>
               <td>{new Date(item.time_report_transmission * 1000).toISOString().substring(11, 23)}</td>
+              <td>{item.geometric_height}</td>
             </tr>
             {/if}
         {/each}
       </tbody>
      </table>
+     <br><br>
+    <button  type="button"  on:click="{htmlToCsv}">Export to .csv</button> 
+     
      <nav class="pagination">
       <ul>
         <li>

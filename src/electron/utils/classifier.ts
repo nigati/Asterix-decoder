@@ -29,7 +29,10 @@ export async function classify_data(
             return decodeClass21Messages(v, index + id + 1);
           })
         );
+        console.log("decoded cat10 items: "+cat10msg)
+        console.log("decoded cat21 items: "+cat21msg)
         return decodedMessages;
+        
       } 
 export async function block_slicer(buffer:Buffer) {
     let i= 0;
@@ -282,9 +285,9 @@ export async function decodeClass10Messages(msg: Buffer, id: number): Promise<Ca
   if (fspec[6] === "1") {
     /// I021/131 Position in WGS-84 co-ordinates, high res.
     if (msg.subarray(offset, offset + 8).length == 0) {
-      console.log("Zero buffer");
+      /* console.log("Zero buffer");
       console.log(fspec);
-      console.log(msg);
+      console.log(msg); */
     }
     tasks.push(decod_msg.set_wgs_84_coordinates_high(msg.subarray(offset, offset + 8)));
     offset += 8; //length =8

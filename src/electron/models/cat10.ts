@@ -1,7 +1,6 @@
 export class Cat10 {
   id: number;
   cat: "Cat10";
-
   message_type: string;
   data_src_id: DataSourceIdentifier;
   target_report_descriptor: TargetReportDescriptor;
@@ -31,6 +30,7 @@ export class Cat10 {
 
   constructor(id: number) {
     this.id = id;
+    this.cat="Cat10";
     this.message_type = "";
     this.time_of_day = 0;
   }

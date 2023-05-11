@@ -177,7 +177,10 @@ interface MOPSv{
 }
 
 interface MetInformation{
-
+  WS?: string;
+  WD?: string;
+  TMP?: string;
+  TRB?: string;
 }
 
 interface ACAS_ResolutioinAdvisorReport{
@@ -201,5 +204,27 @@ interface SurfaceCapabilitiesAndCharacteristics{
 }
 
 interface DataAges{
-
+  aos : string | number ;
+  trd : string | number;
+  m3a : string | number;
+  qi : string | number;
+  tri : string | number;
+  mam : string | number;
+  gh : string | number;
+  fl : string | number;
+  isa : string | number;
+  fsa : string | number ;
+  as : string | number ;
+  tas : string | number;
+  mh : string | number;
+  bvr : string | number;
+  gvr : string | number;
+  gv : string | number;
+  tar : string | number;
+  ti : string | number;
+  ts : string | number;
+  met : string | number;
+  roa : string | number;
+  ara : string | number;
+  scc : string | number;
 }

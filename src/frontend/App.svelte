@@ -66,13 +66,18 @@
   let totalPages: (Cat10 | Cat21)[][] = [];
   let currentPageRows: (Cat10 | Cat21)[] = [];
   let itemsPerPage = 100;
-
+  let filteredItems = [];
   let loading = false;
 
   let expandedRows: (Cat10 | Cat21)[] = [];
   let expandedItem: Cat10 | Cat21;
   $: currentPageRows = totalPages.length > 0 ? totalPages[page] : [];
   $: console.log("Page is", page);
+
+  let selectedCategory = "";
+  let selectedInstrument = "";
+  const categories = Array.from(new Set(items.map(item => item.cat)));
+  const instruments = Array.from(new Set(items.map(item => item.instrument)));
 
   const paginate = (items: (Cat10 | Cat21)[]) => {
     const pages = Math.ceil(items.length / itemsPerPage);
@@ -147,12 +152,34 @@
     document.body.appendChild(download_link);
     download_link.click();
   }
+  $: {
+    filteredItems = items.filter(item => {
+      const isCategoryMatch = selectedCategory === "" || item.cat === selectedCategory;
+      const isInstrumentMatch = selectedInstrument === "" || item.instrument === selectedInstrument;
+      return isCategoryMatch && isInstrumentMatch;
+    });
+  }
 </script>
 
 <main>
   <h1>ASTERIX DECODER</h1>
   <button type="button" class="btn btn-primary" on:click="{handleLoadSomeItems}">PICK FILE</button>
   <br /><br />
+  <label for="category">Category:</label>
+<select bind:value="{selectedCategory}">
+  <option value="">All</option>
+  {#each categories as category}
+    <option value="{category}">{category}</option>
+  {/each}
+</select>
+
+<label for="instrument">Instrument:</label>
+<select bind:value="{selectedInstrument}">
+  <option value="">All</option>
+  {#each instruments as instrument}
+    <option value="{instrument}">{instrument}</option>
+  {/each}
+</select>
   <table>
     <thead>
       <tr>
@@ -1125,7 +1152,6 @@
               No data
             {/if}</td
           >
-            
           </tr>
         {/if}
       {/each}

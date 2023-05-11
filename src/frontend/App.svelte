@@ -23,8 +23,10 @@
   th {
     color: black;
     font-size: medium;
-    border-bottom: 1px solid black; /* Add a bottom border to table headers */
-    border-right: 1px solid black; /* Add a right border to table headers */
+    border-bottom: 2px solid black; /* Add a bottom border to table headers */
+    border-right: 2px solid black; /* Add a right border to table headers */
+    border-top: 2px solid black;
+    border-left: 2px solid black;
   }
   td {
     color: black;
@@ -34,6 +36,7 @@
     width: max-content;
     border-bottom: 1px solid black; /* Add a bottom border to table cells */
     border-right: 1px solid black; /* Add a right border to table cells */
+    border-left:1px solid black;
   }
   tr.smr {
     background-color: grey;
@@ -66,7 +69,7 @@
   let totalPages: (Cat10 | Cat21)[][] = [];
   let currentPageRows: (Cat10 | Cat21)[] = [];
   let itemsPerPage = 100;
-  let filteredItems = [];
+  let filteredItems: (Cat10 | Cat21)[] = [];
   let loading = false;
 
   let expandedRows: (Cat10 | Cat21)[] = [];
@@ -76,10 +79,12 @@
 
   let selectedCategory = "";
   let selectedInstrument = "";
-  const categories = Array.from(new Set(items.map(item => item.cat)));
-  const instruments = Array.from(new Set(items.map(item => item.instrument)));
+  const categories = ["Cat10","Cat21"];
+  const instruments = ["ADS-B","MLAT","SMR"];
+  /* const categories = Array.from(new Set(items.map((item) => item.cat)));
+  const instruments = Array.from(new Set(items.map((item) => item.instrument))); */
 
-  const paginate = (items: (Cat10 | Cat21)[]) => {
+  /* const paginate = (items: (Cat10 | Cat21)[]) => {
     const pages = Math.ceil(items.length / itemsPerPage);
 
     const paginatedItems = Array.from({ length: pages }, (_, index) => {
@@ -89,7 +94,21 @@
 
     console.log("paginatedItems are", paginatedItems);
     totalPages = [...paginatedItems];
+  }; */
+
+  const paginate = (items: (Cat10 | Cat21)[]) => {
+    const filteredPages = Math.ceil(items.length / itemsPerPage);
+
+    const paginatedItems = Array.from({ length: filteredPages }, (_, index) => {
+      const start = index * itemsPerPage;
+      return items.slice(start, start + itemsPerPage);
+    });
+
+    console.log("paginatedItems are", paginatedItems);
+    totalPages = [...paginatedItems];
+    console.log("totalPages are", totalPages);
   };
+
   async function handleLoadSomeItems() {
     items_len = Number.parseInt(await initIpcMain("load-file"));
     if (!items_len) return;
@@ -153,11 +172,20 @@
     download_link.click();
   }
   $: {
-    filteredItems = items.filter(item => {
+    const filteredItems = items.filter((item) => {
       const isCategoryMatch = selectedCategory === "" || item.cat === selectedCategory;
       const isInstrumentMatch = selectedInstrument === "" || item.instrument === selectedInstrument;
       return isCategoryMatch && isInstrumentMatch;
     });
+    console.log("paso x aki");
+    paginate(filteredItems);
+    updateTable();
+  }
+
+  function updateTable() {
+    currentPageRows = totalPages.length > 0 ? totalPages[page] : [];
+    // Add code to update the table HTML with the new rows
+    // For example, you can use DOM manipulation or a framework like React or Vue.js
   }
 </script>
 
@@ -166,20 +194,20 @@
   <button type="button" class="btn btn-primary" on:click="{handleLoadSomeItems}">PICK FILE</button>
   <br /><br />
   <label for="category">Category:</label>
-<select bind:value="{selectedCategory}">
-  <option value="">All</option>
-  {#each categories as category}
-    <option value="{category}">{category}</option>
-  {/each}
-</select>
+  <select bind:value="{selectedCategory}">
+    <option value="">All</option>
+    {#each categories as category}
+      <option value="{category}">{category}</option>
+    {/each}
+  </select>
 
-<label for="instrument">Instrument:</label>
-<select bind:value="{selectedInstrument}">
-  <option value="">All</option>
-  {#each instruments as instrument}
-    <option value="{instrument}">{instrument}</option>
-  {/each}
-</select>
+  <label for="instrument">Instrument:</label>
+  <select bind:value="{selectedInstrument}">
+    <option value="">All</option>
+    {#each instruments as instrument}
+      <option value="{instrument}">{instrument}</option>
+    {/each}
+  </select>
   <table>
     <thead>
       <tr>
@@ -611,7 +639,9 @@
             >
             <td>
               {#if item.wgs_84_coordinates != null}
-                {`LAT: ${item.wgs_84_coordinates.latitude.toFixed(5)}; LONG: ${item.wgs_84_coordinates.longitude.toFixed(5)}`}
+                {`LAT: ${item.wgs_84_coordinates.latitude.toFixed(
+                  5
+                )}; LONG: ${item.wgs_84_coordinates.longitude.toFixed(5)}`}
               {:else}
                 No data
               {/if}</td
@@ -641,13 +671,13 @@
             <td>{"No data"}</td>
             <td class="expandedColumn">
               {#if item.target_report_descriptor != null}
-              {#if expandedItem === item}
-                {#each Object.entries(item.target_report_descriptor) as [attribute, value]}
-                  <div>{`${attribute}: ${value}`}</div>
-                {/each}
-              {:else}
-                <button on:click="{() => expandRow(item)}">Click to expand</button>
-              {/if}
+                {#if expandedItem === item}
+                  {#each Object.entries(item.target_report_descriptor) as [attribute, value]}
+                    <div>{`${attribute}: ${value}`}</div>
+                  {/each}
+                {:else}
+                  <button on:click="{() => expandRow(item)}">Click to expand</button>
+                {/if}
               {:else}
                 No data
               {/if}
@@ -679,13 +709,13 @@
             <td>{"No data"}</td>
             <td class="expandedColumn">
               {#if item.aircraft_operational_status != null}
-              {#if expandedItem === item}
-                {#each Object.entries(item.aircraft_operational_status) as [attribute, value]}
-                  <div>{`${attribute}: ${value}`}</div>
-                {/each}
-              {:else}
-                <button on:click="{() => expandRow(item)}">Click to expand</button>
-              {/if}
+                {#if expandedItem === item}
+                  {#each Object.entries(item.aircraft_operational_status) as [attribute, value]}
+                    <div>{`${attribute}: ${value}`}</div>
+                  {/each}
+                {:else}
+                  <button on:click="{() => expandRow(item)}">Click to expand</button>
+                {/if}
               {:else}
                 No data
               {/if}
@@ -768,390 +798,389 @@
               {/if}</td
             >
 
-            
             <td class="expandedColumn">
               {#if item.quality_indicator != null}
-              {#if expandedItem === item}
-                {#each Object.entries(item.quality_indicator) as [attribute, value]}
-                  <div>{`${attribute}: ${value}`}</div>
-                {/each}
+                {#if expandedItem === item}
+                  {#each Object.entries(item.quality_indicator) as [attribute, value]}
+                    <div>{`${attribute}: ${value}`}</div>
+                  {/each}
+                {:else}
+                  <button on:click="{() => expandRow(item)}">Click to expand</button>
+                {/if}
               {:else}
-                <button on:click="{() => expandRow(item)}">Click to expand</button>
-              {/if}
-              {:else}
-              No data
-            {/if}</td
-          >
+                No data
+              {/if}</td
+            >
             <td class="expandedColumn">
               {#if item.tarjectory_intent != null}
-              {#if expandedItem === item}
-                {#each Object.entries(item.tarjectory_intent) as [attribute, value]}
-                  <div>{`${attribute}: ${value}`}</div>
-                {/each}
+                {#if expandedItem === item}
+                  {#each Object.entries(item.tarjectory_intent) as [attribute, value]}
+                    <div>{`${attribute}: ${value}`}</div>
+                  {/each}
+                {:else}
+                  <button on:click="{() => expandRow(item)}">Click to expand</button>
+                {/if}
               {:else}
-                <button on:click="{() => expandRow(item)}">Click to expand</button>
-              {/if}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.message_amplitude != null}
+                {item.message_amplitude}
               {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.message_amplitude != null}
-              {item.message_amplitude}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.geometric_height != null}
-              {item.geometric_height}
-            {:else}
-              No data
-            {/if}</td
-          >
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.geometric_height != null}
+                {item.geometric_height}
+              {:else}
+                No data
+              {/if}</td
+            >
             <td class="expandedColumn">
               {#if item.selected_altitude != null}
-              {#if expandedItem === item}
-                {#each Object.entries(item.selected_altitude) as [attribute, value]}
-                  <div>{`${attribute}: ${value}`}</div>
-                {/each}
+                {#if expandedItem === item}
+                  {#each Object.entries(item.selected_altitude) as [attribute, value]}
+                    <div>{`${attribute}: ${value}`}</div>
+                  {/each}
+                {:else}
+                  <button on:click="{() => expandRow(item)}">Click to expand</button>
+                {/if}
               {:else}
-                <button on:click="{() => expandRow(item)}">Click to expand</button>
-              {/if}
-              {:else}
-              No data
-            {/if}</td
-          >
+                No data
+              {/if}</td
+            >
             <td class="expandedColumn">
               {#if item.final_state_selected_altitude != null}
-              {#if expandedItem === item}
-                {#each Object.entries(item.final_state_selected_altitude) as [attribute, value]}
-                  <div>{`${attribute}: ${value}`}</div>
-                {/each}
+                {#if expandedItem === item}
+                  {#each Object.entries(item.final_state_selected_altitude) as [attribute, value]}
+                    <div>{`${attribute}: ${value}`}</div>
+                  {/each}
+                {:else}
+                  <button on:click="{() => expandRow(item)}">Click to expand</button>
+                {/if}
               {:else}
-                <button on:click="{() => expandRow(item)}">Click to expand</button>
-              {/if}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.air_speed != null}
+                {item.air_speed}
               {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.air_speed != null}
-              {item.air_speed}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.true_airspeed != null}
-              {item.true_airspeed}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.magnetic_heading != null}
-              {item.magnetic_heading}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.barometric_vertical_rate != null}
-              {item.barometric_vertical_rate}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.geometric_vertical_rate != null}
-              {item.geometric_vertical_rate}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.geometric_vertical_rate != null}
-            {`Ground Speed: ${item.airborne_ground_vector.GroundSpeed}; Track angle: ${item.airborne_ground_vector.TrackAngle}`}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.track_angle_rate != null}
-              {item.track_angle_rate}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.target_identification != null}
-              {item.target_identification}
-            {:else}
-              No data
-            {/if}</td
-          >
-          
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.true_airspeed != null}
+                {item.true_airspeed}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.magnetic_heading != null}
+                {item.magnetic_heading}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.barometric_vertical_rate != null}
+                {item.barometric_vertical_rate}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.geometric_vertical_rate != null}
+                {item.geometric_vertical_rate}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.geometric_vertical_rate != null}
+                {`Ground Speed: ${item.airborne_ground_vector.GroundSpeed}; Track angle: ${item.airborne_ground_vector.TrackAngle}`}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.track_angle_rate != null}
+                {item.track_angle_rate}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.target_identification != null}
+                {item.target_identification}
+              {:else}
+                No data
+              {/if}</td
+            >
+
             <td class="expandedColumn">
               {#if item.target_status != null}
-              {#if expandedItem === item}
-                {#each Object.entries(item.target_status) as [attribute, value]}
-                  <div>{`${attribute}: ${value}`}</div>
-                {/each}
+                {#if expandedItem === item}
+                  {#each Object.entries(item.target_status) as [attribute, value]}
+                    <div>{`${attribute}: ${value}`}</div>
+                  {/each}
+                {:else}
+                  <button on:click="{() => expandRow(item)}">Click to expand</button>
+                {/if}
               {:else}
-                <button on:click="{() => expandRow(item)}">Click to expand</button>
-              {/if}
-              {:else}
-              No data
-            {/if}</td
-          >
+                No data
+              {/if}</td
+            >
             <td class="expandedColumn">
               {#if item.mops_version != null}
-              {#if expandedItem === item}
-                {#each Object.entries(item.mops_version) as [attribute, value]}
-                  <div>{`${attribute}: ${value}`}</div>
-                {/each}
+                {#if expandedItem === item}
+                  {#each Object.entries(item.mops_version) as [attribute, value]}
+                    <div>{`${attribute}: ${value}`}</div>
+                  {/each}
+                {:else}
+                  <button on:click="{() => expandRow(item)}">Click to expand</button>
+                {/if}
               {:else}
-                <button on:click="{() => expandRow(item)}">Click to expand</button>
-              {/if}
+                No data
+              {/if}</td
+            >
+            <td class="expandedColumn">
+              {#if item.met_information != null}
+                {#if expandedItem === item}
+                  {#each Object.entries(item.met_information) as [attribute, value]}
+                    <div>{`${attribute}: ${value}`}</div>
+                  {/each}
+                {:else}
+                  <button on:click="{() => expandRow(item)}">Click to expand</button>
+                {/if}
               {:else}
-              No data
-            {/if}</td
-          >
-          <td class="expandedColumn">
-            {#if item.met_information != null}
-            {#if expandedItem === item}
-              {#each Object.entries(item.met_information) as [attribute, value]}
-                <div>{`${attribute}: ${value}`}</div>
-              {/each}
-            {:else}
-              <button on:click="{() => expandRow(item)}">Click to expand</button>
-            {/if}
-            {:else}
-            No data met
-          {/if}</td
-        >
-          <td>
-            {#if item.roll_angle != null}
-              {item.roll_angle}
-            {:else}
-              No data roll
-            {/if}</td
-          >
+                No data met
+              {/if}</td
+            >
+            <td>
+              {#if item.roll_angle != null}
+                {item.roll_angle}
+              {:else}
+                No data roll
+              {/if}</td
+            >
             <td class="expandedColumn">
               {#if item.acas_resolution_advisory_report != null}
-              {#if expandedItem === item}
-                {#each Object.entries(item.acas_resolution_advisory_report) as [attribute, value]}
-                  <div>{`${attribute}: ${value}`}</div>
-                {/each}
+                {#if expandedItem === item}
+                  {#each Object.entries(item.acas_resolution_advisory_report) as [attribute, value]}
+                    <div>{`${attribute}: ${value}`}</div>
+                  {/each}
+                {:else}
+                  <button on:click="{() => expandRow(item)}">Click to expand</button>
+                {/if}
               {:else}
-                <button on:click="{() => expandRow(item)}">Click to expand</button>
-              {/if}
-              {:else}
-              No data
-            {/if}</td
-          >
+                No data
+              {/if}</td
+            >
             <td class="expandedColumn">
               {#if item.surface_capabilities_and_characteristics != null}
-              {#if expandedItem === item}
-                {#each Object.entries(item.surface_capabilities_and_characteristics) as [attribute, value]}
-                  <div>{`${attribute}: ${value}`}</div>
-                {/each}
+                {#if expandedItem === item}
+                  {#each Object.entries(item.surface_capabilities_and_characteristics) as [attribute, value]}
+                    <div>{`${attribute}: ${value}`}</div>
+                  {/each}
+                {:else}
+                  <button on:click="{() => expandRow(item)}">Click to expand</button>
+                {/if}
               {:else}
-                <button on:click="{() => expandRow(item)}">Click to expand</button>
-              {/if}
-              {:else}
-              No data surface
-            {/if}</td
-          >
+                No data surface
+              {/if}</td
+            >
             <td class="expandedColumn">
               {#if item.data_ages != null}
-              {#if expandedItem === item}
-                {#each Object.entries(item.data_ages) as [attribute, value]}
-                  <div>{`${attribute}: ${value}`}</div>
-                {/each}
+                {#if expandedItem === item}
+                  {#each Object.entries(item.data_ages) as [attribute, value]}
+                    <div>{`${attribute}: ${value}`}</div>
+                  {/each}
+                {:else}
+                  <button on:click="{() => expandRow(item)}">Click to expand</button>
+                {/if}
               {:else}
-                <button on:click="{() => expandRow(item)}">Click to expand</button>
-              {/if}
+                No data ages
+              {/if}</td
+            >
+            <td>
+              {#if item.receiver_ID != null}
+                {item.receiver_ID}
               {:else}
-              No data ages
-            {/if}</td
-          >
-          <td>
-            {#if item.receiver_ID != null}
-              {item.receiver_ID}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Pic_accuracy != null}
-              {item.Pic_accuracy}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Surface_Capabilities_and_Characteristics_age != null}
-              {item.Surface_Capabilities_and_Characteristics_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.ACAS_Resolution_Advisory_age != null}
-              {item.ACAS_Resolution_Advisory_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Roll_Angle_age != null}
-              {item.Roll_Angle_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Met_Information_age != null}
-              {item.Met_Information_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Target_Status_age != null}
-              {item.Target_Status_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Target_Identification_age != null}
-              {item.Target_Identification_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Track_Angle_Rate_age != null}
-              {item.Track_Angle_Rate_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Ground_Vector_age != null}
-              {item.Ground_Vector_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Geometric_Vertical_Rate_age != null}
-              {item.Geometric_Vertical_Rate_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Barometric_Vertical_Rate_age != null}
-              {item.Barometric_Vertical_Rate_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Magnetic_Heading_age != null}
-              {item.Magnetic_Heading_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.True_Air_Speed_age != null}
-              {item.True_Air_Speed_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Air_Speed_age != null}
-              {item.Air_Speed_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Final_State_Selected_Altitude_age != null}
-              {item.Final_State_Selected_Altitude_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Intermediate_State_Selected_Altitude_age != null}
-              {item.Intermediate_State_Selected_Altitude_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Flight_Level_age != null}
-              {item.Flight_Level_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Geometric_Height_age != null}
-              {item.Geometric_Height_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Message_Amplitude_age != null}
-              {item.Message_Amplitude_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Trajectory_Intent_age != null}
-              {item.Trajectory_Intent_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Quality_Indicators_age != null}
-              {item.Quality_Indicators_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Mode_3A_Code_age != null}
-              {item.Mode_3A_Code_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Target_Report_Descriptor_age != null}
-              {item.Target_Report_Descriptor_age}
-            {:else}
-              No data
-            {/if}</td
-          >
-          <td>
-            {#if item.Aircraft_Operational_Status_age != null}
-              {item.Aircraft_Operational_Status_age}
-            {:else}
-              No data
-            {/if}</td
-          >
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Pic_accuracy != null}
+                {item.Pic_accuracy}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Surface_Capabilities_and_Characteristics_age != null}
+                {item.Surface_Capabilities_and_Characteristics_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.ACAS_Resolution_Advisory_age != null}
+                {item.ACAS_Resolution_Advisory_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Roll_Angle_age != null}
+                {item.Roll_Angle_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Met_Information_age != null}
+                {item.Met_Information_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Target_Status_age != null}
+                {item.Target_Status_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Target_Identification_age != null}
+                {item.Target_Identification_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Track_Angle_Rate_age != null}
+                {item.Track_Angle_Rate_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Ground_Vector_age != null}
+                {item.Ground_Vector_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Geometric_Vertical_Rate_age != null}
+                {item.Geometric_Vertical_Rate_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Barometric_Vertical_Rate_age != null}
+                {item.Barometric_Vertical_Rate_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Magnetic_Heading_age != null}
+                {item.Magnetic_Heading_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.True_Air_Speed_age != null}
+                {item.True_Air_Speed_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Air_Speed_age != null}
+                {item.Air_Speed_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Final_State_Selected_Altitude_age != null}
+                {item.Final_State_Selected_Altitude_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Intermediate_State_Selected_Altitude_age != null}
+                {item.Intermediate_State_Selected_Altitude_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Flight_Level_age != null}
+                {item.Flight_Level_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Geometric_Height_age != null}
+                {item.Geometric_Height_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Message_Amplitude_age != null}
+                {item.Message_Amplitude_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Trajectory_Intent_age != null}
+                {item.Trajectory_Intent_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Quality_Indicators_age != null}
+                {item.Quality_Indicators_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Mode_3A_Code_age != null}
+                {item.Mode_3A_Code_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Target_Report_Descriptor_age != null}
+                {item.Target_Report_Descriptor_age}
+              {:else}
+                No data
+              {/if}</td
+            >
+            <td>
+              {#if item.Aircraft_Operational_Status_age != null}
+                {item.Aircraft_Operational_Status_age}
+              {:else}
+                No data
+              {/if}</td
+            >
           </tr>
         {/if}
       {/each}

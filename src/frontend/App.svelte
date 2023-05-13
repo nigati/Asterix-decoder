@@ -4,11 +4,11 @@
     padding: 1em;
     margin-left: 220px; /* sidebar width + 2x padding */
     padding: 20px;
-    max-width: 1200px; /* Add 'px' to specify the unit */
+    max-width: 1500px; /* Add 'px' to specify the unit */
     margin: 0 auto;
   }
 
-  .expandedColumn {
+  td.expandedColumn {
     width: 400px; /* Adjust the width to your desired value */
   }
 
@@ -36,7 +36,7 @@
     width: max-content;
     border-bottom: 1px solid black; /* Add a bottom border to table cells */
     border-right: 1px solid black; /* Add a right border to table cells */
-    border-left:1px solid black;
+    border-left: 1px solid black;
   }
   tr.smr {
     background-color: grey;
@@ -73,28 +73,15 @@
   let loading = false;
 
   let expandedRows: (Cat10 | Cat21)[] = [];
-  let expandedItem: Cat10 | Cat21;
+  let expandedItem: Cat10 | Cat21 | null;
   $: currentPageRows = totalPages.length > 0 ? totalPages[page] : [];
   $: console.log("Page is", page);
 
   let selectedCategory = "";
   let selectedInstrument = "";
-  const categories = ["Cat10","Cat21"];
-  const instruments = ["ADS-B","MLAT","SMR"];
-  /* const categories = Array.from(new Set(items.map((item) => item.cat)));
-  const instruments = Array.from(new Set(items.map((item) => item.instrument))); */
-
-  /* const paginate = (items: (Cat10 | Cat21)[]) => {
-    const pages = Math.ceil(items.length / itemsPerPage);
-
-    const paginatedItems = Array.from({ length: pages }, (_, index) => {
-      const start = index * itemsPerPage;
-      return items.slice(start, start + itemsPerPage);
-    });
-
-    console.log("paginatedItems are", paginatedItems);
-    totalPages = [...paginatedItems];
-  }; */
+  let searchTargetID = "";
+  const categories = ["Cat10", "Cat21"];
+  const instruments = ["ADS-B", "MLAT", "SMR"];
 
   const paginate = (items: (Cat10 | Cat21)[]) => {
     const filteredPages = Math.ceil(items.length / itemsPerPage);
@@ -106,7 +93,6 @@
 
     console.log("paginatedItems are", paginatedItems);
     totalPages = [...paginatedItems];
-    console.log("totalPages are", totalPages);
   };
 
   async function handleLoadSomeItems() {
@@ -144,6 +130,24 @@
     }
   }
 
+  function htmlToCsvAll(filename: any) {
+    var csv: string[] = [];
+    for (var page = 1; page <= totalPages.length; page++) {
+      setPage(page);
+      var rows = document.querySelectorAll("table tr");
+
+      for (var i = 0; i < rows.length; i++) {
+        var row = [];
+        var cols = rows[i].querySelectorAll("td,th");
+        for (var j = 0; j < cols.length; j++) {
+          row.push(cols[j].innerHTML);
+        }
+        csv.push(row.join(","));
+      }
+    }
+
+    downloadCSVFile(csv.join("\n"), filename);
+  }
   function htmlToCsv(filename: any) {
     var csv: string[] = [];
     var rows = document.querySelectorAll("table tr");
@@ -171,11 +175,52 @@
     document.body.appendChild(download_link);
     download_link.click();
   }
+  // ...
+
+  /* function exportItemsToCSV() {
+  const csvContent = convertItemsToCSV();
+  downloadCSVFile(csvContent, "items.csv");
+}
+
+function convertItemsToCSV() {
+  const csvRows = [];
+
+  // Retrieve all unique attributes from items
+  const attributes = new Set<string>();
+  for (const item of items) {
+    const itemKeys = Object.keys(item);
+    itemKeys.forEach((key) => attributes.add(key));
+  }
+
+  // Add header row
+  const headerRow = Array.from(attributes);
+  csvRows.push(headerRow.join(","));
+
+  // Add data rows
+  for (const item of items) {
+    const dataRow = headerRow.map((attribute) => {
+      return (item as { [key: string]: string })[attribute] || "";
+    });
+    csvRows.push(dataRow.join(","));
+  }
+
+  return csvRows.join("\n");
+} */
+
+  // ...
+
   $: {
+    console.log(searchTargetID);
     const filteredItems = items.filter((item) => {
       const isCategoryMatch = selectedCategory === "" || item.cat === selectedCategory;
       const isInstrumentMatch = selectedInstrument === "" || item.instrument === selectedInstrument;
-      return isCategoryMatch && isInstrumentMatch;
+      /* let isIDMatchcat10 = true; 
+     let isIDMatchcat21 = true; 
+ if (item.cat === "Cat10" && item.targed_id.target_identification!==null) {
+  isIDMatchcat10 = searchTargetID === "" || item.targed_id.target_identification === searchTargetID;
+} else if (item.cat === "Cat21" && item.target_identification!==null) {
+  isIDMatchcat21 = searchTargetID === "" || item.target_identification === searchTargetID;
+} */ return isCategoryMatch && isInstrumentMatch /* && isIDMatchcat10 && isIDMatchcat21 */;
     });
     console.log("paso x aki");
     paginate(filteredItems);
@@ -186,6 +231,9 @@
     currentPageRows = totalPages.length > 0 ? totalPages[page] : [];
     // Add code to update the table HTML with the new rows
     // For example, you can use DOM manipulation or a framework like React or Vue.js
+  }
+  function Shrink() {
+    expandedItem = null;
   }
 </script>
 
@@ -208,6 +256,11 @@
       <option value="{instrument}">{instrument}</option>
     {/each}
   </select>
+  <input type="text" bind:value="{searchTargetID}" placeholder="Enter Target ID" />
+
+  <button type="button" class="btn-shrink" on:click="{() => Shrink()}" disabled="{expandedItem === null}">
+    Shrink
+  </button>
   <table>
     <thead>
       <tr>
@@ -301,8 +354,6 @@
     </thead>
     <tbody>
       {#each currentPageRows as item}
-        <!-- {@debug currentPageRows}
-        {@debug item} -->
         {#if item.cat === "Cat10"}
           <tr class:smr="{item.instrument === 'SMR'}" class:mlat="{item.instrument === 'MLAT'}">
             <td>
@@ -394,7 +445,7 @@
               {#if item.track_status != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.track_status) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -408,7 +459,7 @@
               {#if item.target_report_descriptor != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.target_report_descriptor) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -442,7 +493,7 @@
               {#if item.mode_3a_code_in_octal_rep != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.mode_3a_code_in_octal_rep) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -476,7 +527,7 @@
               {#if item.target_size_orientation != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.target_size_orientation) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -524,7 +575,7 @@
               {#if item.sys_status != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.sys_status) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -673,7 +724,7 @@
               {#if item.target_report_descriptor != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.target_report_descriptor) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -711,7 +762,7 @@
               {#if item.aircraft_operational_status != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.aircraft_operational_status) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -743,49 +794,49 @@
             >
             <td>
               {#if item.time_applicability_position != null}
-                {item.time_applicability_position}
+                {new Date(item.time_applicability_position * 1000).toISOString().substring(11, 23)}
               {:else}
                 No data
               {/if}</td
             >
             <td>
               {#if item.time_applicability_velocity != null}
-                {item.time_applicability_velocity}
+                {new Date(item.time_applicability_velocity * 1000).toISOString().substring(11, 23)}
               {:else}
                 No data
               {/if}</td
             >
             <td>
               {#if item.time_message_reception_position != null}
-                {item.time_message_reception_position}
+                {new Date(item.time_message_reception_position * 1000).toISOString().substring(11, 23)}
               {:else}
                 No data
               {/if}</td
             >
             <td>
               {#if item.time_message_reception_position_high != null}
-                {item.time_message_reception_position_high}
+                {new Date(item.time_message_reception_position_high * 1000).toISOString().substring(11, 23)}
               {:else}
                 No data
               {/if}</td
             >
             <td>
               {#if item.time_message_reception_velocity != null}
-                {item.time_message_reception_velocity}
+                {new Date(item.time_message_reception_velocity * 1000).toISOString().substring(11, 23)}
               {:else}
                 No data
               {/if}</td
             >
             <td>
               {#if item.time_message_reception_velocity_high != null}
-                {item.time_message_reception_velocity_high}
+                {new Date(item.time_message_reception_velocity_high * 1000).toISOString().substring(11, 23)}
               {:else}
                 No data
               {/if}</td
             >
             <td>
               {#if item.time_report_transmission != null}
-                {item.time_report_transmission}
+                {new Date(item.time_report_transmission * 1000).toISOString().substring(11, 23)}
               {:else}
                 No data
               {/if}</td
@@ -802,7 +853,7 @@
               {#if item.quality_indicator != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.quality_indicator) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -815,7 +866,7 @@
               {#if item.tarjectory_intent != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.tarjectory_intent) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -842,7 +893,7 @@
               {#if item.selected_altitude != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.selected_altitude) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -855,7 +906,7 @@
               {#if item.final_state_selected_altitude != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.final_state_selected_altitude) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -925,7 +976,7 @@
               {#if item.target_status != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.target_status) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -938,7 +989,7 @@
               {#if item.mops_version != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.mops_version) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -951,7 +1002,7 @@
               {#if item.met_information != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.met_information) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -971,7 +1022,7 @@
               {#if item.acas_resolution_advisory_report != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.acas_resolution_advisory_report) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -984,7 +1035,7 @@
               {#if item.surface_capabilities_and_characteristics != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.surface_capabilities_and_characteristics) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -997,7 +1048,7 @@
               {#if item.data_ages != null}
                 {#if expandedItem === item}
                   {#each Object.entries(item.data_ages) as [attribute, value]}
-                    <div>{`${attribute}: ${value}`}</div>
+                    <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
                   <button on:click="{() => expandRow(item)}">Click to expand</button>
@@ -1187,8 +1238,8 @@
     </tbody>
   </table>
   <br /><br />
-  <button type="button" on:click="{htmlToCsv}">Export to .csv</button>
-
+  <button type="button" on:click="{htmlToCsv}">Export to .csv current page</button>
+  <button type="button" on:click="{htmlToCsvAll}">Export to .csv whole doc</button>
   <nav class="pagination">
     <ul>
       <li>

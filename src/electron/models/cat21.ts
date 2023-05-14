@@ -371,7 +371,8 @@ export class Cat21{
     }
 
     async set_time_report_transmission(buffer: Buffer) {
-        this.time_report_transmission = Math.round((parseInt("0x" + buffer.toString("hex")) / 128.0) * 10) / 10;
+      this.time_report_transmission = Number((parseInt("0x" + buffer.toString("hex")) / 128.0 * 10).toFixed(3));
+
     }
     
     async set_target_address(buffer: Buffer) {

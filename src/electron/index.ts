@@ -26,6 +26,8 @@ logger.info(settings.get("check") ? "Settings store works correctly." : "Setting
 let mainWindow: BrowserWindow | null;
 let notification: Notification | null;
 
+
+
 const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1200,

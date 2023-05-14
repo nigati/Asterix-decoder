@@ -59,6 +59,8 @@
   import type { Cat10 } from "./models/cat10";
   import type { Cat21 } from "./models/cat21";
   import { initIpcMain, ipcMainBi, parseIpcMainReceiveMessage } from "./ipcMain";
+  import Map from './Map.svelte';
+  
 
   let items: (Cat10 | Cat21)[] = [];
   let items_len = 0;
@@ -149,6 +151,7 @@
   }
 </script>
 
+    
 <main>
   <h1>ASTERIX DECODER</h1>
   <button type="button" class="btn btn-primary" on:click="{handleLoadSomeItems}">PICK FILE</button>
@@ -1188,4 +1191,7 @@
       </li>
     </ul>
   </nav>
+  <Map />
+  
+  
 </main>

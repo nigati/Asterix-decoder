@@ -119,19 +119,23 @@
       page = p;
     }
   };
-  function expandRow(item: Cat10 | Cat21) {
+  /* function expandRow(item: Cat10 | Cat21) {
     expandedItem = item;
-  }
-  function toggleRow(item: Cat10 | Cat21) {
+  } */
+  function expandRow(item: Cat10 | Cat21) {
     if (expandedRows.includes(item)) {
       expandedRows = expandedRows.filter((row) => row !== item);
     } else {
       expandedRows.push(item);
     }
+    console.log(expandedRows);
+    updateTable();
   }
 
   function htmlToCsvAll(filename: any) {
     var csv: string[] = [];
+    expandedRows=items;
+    updateTable();
     for (var page = 1; page <= totalPages.length; page++) {
       setPage(page);
       var rows = document.querySelectorAll("table tr");
@@ -175,40 +179,7 @@
     document.body.appendChild(download_link);
     download_link.click();
   }
-  // ...
-
-  /* function exportItemsToCSV() {
-  const csvContent = convertItemsToCSV();
-  downloadCSVFile(csvContent, "items.csv");
-}
-
-function convertItemsToCSV() {
-  const csvRows = [];
-
-  // Retrieve all unique attributes from items
-  const attributes = new Set<string>();
-  for (const item of items) {
-    const itemKeys = Object.keys(item);
-    itemKeys.forEach((key) => attributes.add(key));
-  }
-
-  // Add header row
-  const headerRow = Array.from(attributes);
-  csvRows.push(headerRow.join(","));
-
-  // Add data rows
-  for (const item of items) {
-    const dataRow = headerRow.map((attribute) => {
-      return (item as { [key: string]: string })[attribute] || "";
-    });
-    csvRows.push(dataRow.join(","));
-  }
-
-  return csvRows.join("\n");
-} */
-
-  // ...
-
+ 
   $: {
     console.log(searchTargetID);
     const filteredItems = items.filter((item) => {
@@ -233,8 +204,11 @@ function convertItemsToCSV() {
     // For example, you can use DOM manipulation or a framework like React or Vue.js
   }
   function Shrink() {
-    expandedItem = null;
-  }
+/*     expandedItem = null;
+ */  
+expandedRows=[];
+console.log(expandedRows)
+}
 </script>
 
 <main>
@@ -443,7 +417,7 @@ function convertItemsToCSV() {
 
             <td class="expandedColumn">
               {#if item.track_status != null}
-                {#if expandedItem === item}
+                {#if expandedRows.includes(item)}
                   {#each Object.entries(item.track_status) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
@@ -457,7 +431,7 @@ function convertItemsToCSV() {
 
             <td class="expandedColumn">
               {#if item.target_report_descriptor != null}
-                {#if expandedItem === item}
+                {#if expandedRows.includes(item)}
                   {#each Object.entries(item.target_report_descriptor) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
@@ -491,8 +465,8 @@ function convertItemsToCSV() {
             >
             <td class="expandedColumn">
               {#if item.mode_3a_code_in_octal_rep != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.mode_3a_code_in_octal_rep) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.mode_3a_code_in_octal_rep) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -525,8 +499,8 @@ function convertItemsToCSV() {
             >
             <td class="expandedColumn">
               {#if item.target_size_orientation != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.target_size_orientation) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.target_size_orientation) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -538,8 +512,8 @@ function convertItemsToCSV() {
             </td>
             <td class="expandedColumn">
               {#if item.presence != null}
-                {#if expandedItem === item}
-                  {#each item.presence as Presence}
+              {#if expandedRows.includes(item)}
+              {#each item.presence as Presence}
                     <div>{`DRHO: ${Presence.DRHO}`}</div>
                     <div>{`DTHETA: ${Presence.DTHETA}`}</div>
                   {/each}
@@ -573,8 +547,8 @@ function convertItemsToCSV() {
             >
             <td class="expandedColumn">
               {#if item.sys_status != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.sys_status) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.sys_status) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -644,7 +618,7 @@ function convertItemsToCSV() {
             <td>{"No data"}</td>
           </tr>
         {:else if item.cat === "Cat21"}
-          <tr on:click="{() => toggleRow(item)}">
+          <tr>
             <td>
               {#if item.id != null}
                 {item.id}
@@ -722,8 +696,8 @@ function convertItemsToCSV() {
             <td>{"No data"}</td>
             <td class="expandedColumn">
               {#if item.target_report_descriptor != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.target_report_descriptor) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.target_report_descriptor) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -760,8 +734,8 @@ function convertItemsToCSV() {
             <td>{"No data"}</td>
             <td class="expandedColumn">
               {#if item.aircraft_operational_status != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.aircraft_operational_status) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.aircraft_operational_status) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -851,8 +825,8 @@ function convertItemsToCSV() {
 
             <td class="expandedColumn">
               {#if item.quality_indicator != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.quality_indicator) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.quality_indicator) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -864,8 +838,8 @@ function convertItemsToCSV() {
             >
             <td class="expandedColumn">
               {#if item.tarjectory_intent != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.tarjectory_intent) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.tarjectory_intent) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -891,8 +865,8 @@ function convertItemsToCSV() {
             >
             <td class="expandedColumn">
               {#if item.selected_altitude != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.selected_altitude) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.selected_altitude) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -904,8 +878,8 @@ function convertItemsToCSV() {
             >
             <td class="expandedColumn">
               {#if item.final_state_selected_altitude != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.final_state_selected_altitude) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.final_state_selected_altitude) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -974,8 +948,8 @@ function convertItemsToCSV() {
 
             <td class="expandedColumn">
               {#if item.target_status != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.target_status) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.target_status) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -987,8 +961,8 @@ function convertItemsToCSV() {
             >
             <td class="expandedColumn">
               {#if item.mops_version != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.mops_version) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.mops_version) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -1000,8 +974,8 @@ function convertItemsToCSV() {
             >
             <td class="expandedColumn">
               {#if item.met_information != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.met_information) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.met_information) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -1020,8 +994,8 @@ function convertItemsToCSV() {
             >
             <td class="expandedColumn">
               {#if item.acas_resolution_advisory_report != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.acas_resolution_advisory_report) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.acas_resolution_advisory_report) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -1033,8 +1007,8 @@ function convertItemsToCSV() {
             >
             <td class="expandedColumn">
               {#if item.surface_capabilities_and_characteristics != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.surface_capabilities_and_characteristics) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.surface_capabilities_and_characteristics) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}
@@ -1046,8 +1020,8 @@ function convertItemsToCSV() {
             >
             <td class="expandedColumn">
               {#if item.data_ages != null}
-                {#if expandedItem === item}
-                  {#each Object.entries(item.data_ages) as [attribute, value]}
+              {#if expandedRows.includes(item)}
+              {#each Object.entries(item.data_ages) as [attribute, value]}
                     <div><strong>{`-${attribute}: `}</strong>{`${value}`}</div>
                   {/each}
                 {:else}

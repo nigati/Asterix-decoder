@@ -26,15 +26,19 @@ logger.info(settings.get("check") ? "Settings store works correctly." : "Setting
 let mainWindow: BrowserWindow | null;
 let notification: Notification | null;
 
+
+
 const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    
     webPreferences: {
       devTools: isProd ? false : true,
       contextIsolation: true,
       preload: join(__dirname, "/utils/preload.js"),
     },
+    
   });
 
   const url =
@@ -43,7 +47,7 @@ const createWindow = () => {
       ? // in production, use the statically build version of our application
         `file://${join(__dirname, "public", "index.html")}`
       : // in dev, target the host and port of the local rollup web server
-        "http://localhost:5000";
+        "http://localhost:3000";
 
   mainWindow.loadURL(url).catch((err) => {
     logger.error(JSON.stringify(err));

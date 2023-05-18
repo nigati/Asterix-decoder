@@ -80,13 +80,13 @@ export default {
       sourceMap: !production,
       inlineSources: !production,
     }),
-
+    
     // In dev mode, call `npm run start` once
     // the bundle has been generated
     !production &&
       serve({
         host: "localhost",
-        port: 5000,
+        port: 3000,
         contentBase: "public",
         // verbose: true,
       }),
@@ -110,4 +110,5 @@ export default {
   watch: {
     clearScreen: false,
   },
+  
 };

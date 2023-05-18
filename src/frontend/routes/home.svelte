@@ -9,6 +9,12 @@
       font-weight: bold;
       margin-bottom: 1em;
     }
+    #home h3 {
+      color: #226d3a;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 1em;
+    }
   
     #home p {
         color: #226d3a;
@@ -24,7 +30,16 @@
       color: #226d3a;
 
     }
-  
+  #home button {
+    padding: 0.5em 1em;
+    font-size: 1em;
+    background-color: #226d3a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
     #home ul li {
       margin-bottom: 0.5em;
       color: #226d3a;
@@ -43,6 +58,7 @@
   
   <script>
     export let activeWindow;
+    let showTeamMembers=false;
   </script>
 <!-- Home section -->
 <section id="home" class="{activeWindow === 'home' ? 'active' : ''}">
@@ -65,4 +81,18 @@
       To navigate between these pages, use the sidebar on the left. Simply click on the respective item to switch to that
       page. The active page will be highlighted in the sidebar.
     </p>
+    {#if showTeamMembers}
+    <h3>Our Team Members:</h3>
+    <ul>
+      <li>Daniel Carneros Mateu</li>
+      <li>Pablo Carreras Escudero</li>
+      <li>José Ramón Iniesta Expósito</li>
+      <li>Hatim Benallal Benallal</li>
+      <li>Nicolai Galici-Tiscenco</li>
+    </ul>
+    {:else}
+    <button class="show-team-button" on:click="{() => showTeamMembers = true}">
+      Show Team Members
+    </button>
+  {/if}
   </section>

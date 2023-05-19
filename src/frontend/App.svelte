@@ -237,8 +237,6 @@
 
   var csv: string[] = [];
 
-  let filteredItems: (Cat10 | Cat21)[] = [];
-  let loading = false;
 
   let activeWindow = "home";
 
@@ -273,7 +271,6 @@
     cat10Count = 0;
     cat21Count = 0;
     items = [];
-    loading = true;
     console.log({ data_len: items_len });
     const FRAGMENTS = 1000;
     let i = 0;
@@ -291,7 +288,6 @@
       }
     });
 
-    loading = false;
     paginate(items);
   }
   const setPage = (p: number) => {
@@ -1541,7 +1537,7 @@
     {:else if activeWindow === "map"}
       <section id="map">
         {#if items.length!==null}
-        <Map {items}/>
+        <Map />
         {/if}
       </section>
     {:else if activeWindow === "extra"}

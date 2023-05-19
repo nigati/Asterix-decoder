@@ -148,7 +148,7 @@
 	import Simulation from "./simulation.svelte";
 	import PlanesComponent from "./planesComponent.svelte";
 	  
-	let messages: (Cat10 | Cat21)[] = [];
+	export let items: (Cat10 | Cat21)[] = [];
   
 	
 	let simulationComponent: Simulation;
@@ -172,9 +172,9 @@
 	  visibleItem = "MAP";
   
 	  initializeMap();
-	  if (messages.length > 0) {
+	  if (items.length > 0) {
 		setTimeout(() => {
-		  simulationComponent.initializeSimulation!(messages);
+		  simulationComponent.initializeSimulation!(items);
 		}, 750);
 	  }
 	}
@@ -209,7 +209,7 @@
   
   <main>
 	<div class="{visibleItem === 'MAP' ? 'main overflow' : 'main'}">
-	  {#if messages.length > 0}
+	  {#if items.length > 0}
 		<ul class="nav nav-tabs">
 		  <!-- svelte-ignore a11y-click-events-have-key-events -->
 		  <li class="nav-item" on:click="{handleMapClick}">
@@ -257,7 +257,7 @@
 			
 			<button
 			  type="button"
-			  class="{messages.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
+			  class="{items.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
 			  on:click="{kml_file}"
 			  ><i class="bi bi-file-earmark-image"></i>
 			</button>
@@ -266,24 +266,24 @@
 			</button>
 			<button
 			  type="button"
-			  class="{messages.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
+			  class="{items.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
 			  on:click="{simulationComponent.backwardsTick}"><i class="bi bi-arrow-90deg-left"></i></button
 			>
 			<button
 			  type="button"
-			  class="{messages.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
+			  class="{items.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
 			  on:click="{simulationComponent.restartSim}"
 			  ><i class="bi bi-arrow-counterclockwise"></i>
 			</button>
 			<button
 			  type="button"
-			  class="{messages.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
+			  class="{items.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
 			  on:click="{simulationComponent.seeAllPlanes}"
 			  ><i class="bi bi-airplane"></i>
 			</button>
 			<button
 			  type="button"
-			  class="{messages.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
+			  class="{items.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
 			  on:click="{simulationComponent.playClick}"
 			>
 			  {#if play}
@@ -295,7 +295,7 @@
   
 			<button
 			  type="button"
-			  class="{messages.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
+			  class="{items.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
 			  on:click="{simulationComponent.forwardsTick}"
 			  ><i class="bi bi-arrow-90deg-right"></i>
 			</button>

@@ -1540,7 +1540,9 @@
       </section>
     {:else if activeWindow === "map"}
       <section id="map">
-        <Map />
+        {#if items.length!==null}
+        <Map {items}/>
+        {/if}
       </section>
     {:else if activeWindow === "extra"}
       <h2>Extra</h2>

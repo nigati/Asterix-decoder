@@ -1,42 +1,22 @@
 <script>
-    import { onMount } from 'svelte';
-    import 'leaflet/dist/leaflet.css';
-    import L from 'leaflet';
+	import { onMount } from 'svelte';
+	import L from 'leaflet';
+	import 'leaflet/dist/leaflet.css';
+
+	const accessToken = "pk.eyJ1IjoiaGF0aW05OTkiLCJhIjoiY2xodTIzYzllMGJsbDNkcWhldGYwOGw2YyJ9.bRw8kPgowd5L01YzsJNyRA"
   
-    let map;
+	onMount(() => {
+	  const map = L.map('map').setView([51.505, -0.09], 13);
   
-    onMount(() => {
-      console.log('Map mounted');
-      map = L.map('map').setView([41.289, 2.07], 13);
+	  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?access-token=${accessToken}', {
+		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+	  }).addTo(map);
   
-      // Configurar la CSP manualmente
-      const meta = document.createElement('meta');
-      meta.setAttribute('http-equiv', 'Content-Security-Policy');
-      meta.setAttribute(
-        'content',
-        "default-src 'self'; img-src 'self' data: https://*.tile.openstreetmap.org"
-      );
-      document.head.appendChild(meta);
-  
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution:
-          'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-        maxZoom: 18,
-      }).addTo(map);
-    });
+	  L.marker([51.5, -0.09]).addTo(map)
+		.bindPopup('Aqui estoy.')
+		.openPopup();
+	});
   </script>
   
-  <style>
-    #map {
-      width: 100%;
-      height: 400px;
-    }
-  </style>
+  <div id="map" style="width: 100%; height: 400px;"></div>
   
-  <div id="map"></div>
-  
-  
-  
-  
-  
-

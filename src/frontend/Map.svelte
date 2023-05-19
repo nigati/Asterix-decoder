@@ -346,74 +346,7 @@
 		  </div>
 		{/if}
   
-		<div class="ontop dark" id="legend" transition:fade="{{ duration: 100 }}">
-		  <p>Map Legend</p>
-		  <div style="font-size:small">
-			<tr>
-			  <td>
-				<div class="color" style="background-color: #fe0000;"></div>
-			  </td>
-			  <td>SMR Data Point</td>
-			</tr>
-			<tr>
-			  <td>
-				<div class="color" style="background-color: #ffeb16;"></div>
-			  </td>
-			  <td>MLAT Data Point</td>
-			</tr>
-			<tr>
-			  <td>
-				<div class="color" style="background-color: #6733bb;"></div>
-			  </td>
-			  <td>ADS-B Data Point</td>
-			</tr>
-			<tr>
-			  <td>
-				<div class="color-round" style="background-color: #fe0000;"></div>
-			  </td>
-			  <td> SMR Instrument </td>
-			</tr>
-			<tr>
-			  <td>
-				<div class="color-round" style="background-color: #ffeb16;"></div>
-			  </td>
-			  <td>MLAT Instrument</td>
-			</tr>
-			{#if btncheckAreas === true}
-			  MLAT Performance Zones
-			  <tr>
-				<td>
-				  <div class="color-area" style="background-color: rgba(103, 51, 187, 0.6);"></div>
-				</td>
-				<td>Airborne</td>
-			  </tr>
-			  <tr>
-				<td>
-				  <div class="color-area" style="background-color: rgba(227, 139, 79, 0.8);"></div>
-				</td>
-				<td>Runway</td>
-			  </tr>
-			  <tr>
-				<td>
-				  <div class="color-area" style="background-color: rgba(0, 255, 0, 0.6);"></div>
-				</td>
-				<td>Taxi</td>
-			  </tr>
-			  <tr>
-				<td>
-				  <div class="color-area" style="background-color: rgba(255, 0, 0, 0.6);"></div>
-				</td>
-				<td>Apron</td>
-			  </tr>
-			  <tr>
-				<td>
-				  <div class="color-area" style="background-color: rgba(51, 51, 51, 0.8);"></div>
-				</td>
-				<td>Stand</td>
-			  </tr>
-			{/if}
-		  </div>
-		</div>
+		
 		<div class="ontop dark" id="btn-bar">
 		  <div id="progDiv">
 			<Simulation

@@ -172,6 +172,12 @@
       </div>
       <div>
         <button
+            type="button"
+            class="{items.length > 0 ? 'btn btn-primary' : 'btn btn-primary disabled'}"
+            on:click="{kml_file}"
+            ><i class="bi bi-file-earmark-image"></i>
+          </button>
+        <button
               type="button"
               class="{items.length > 0
                 ? 'btn btn-primary play-back-button'

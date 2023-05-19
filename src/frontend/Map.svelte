@@ -50,6 +50,16 @@
     transform: translate(-50%, 0);
     width: max-content;
   }
+  .btn-primary{
+	padding: 0.5em 1em;
+    font-size: 1em;
+    background-color: #226d3a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
 
   #legend {
     bottom: 20px;
@@ -145,6 +155,7 @@
   export let items: (Cat10 | Cat21)[] = [];
   let simulationComponent: Simulation;
   console.log("play paly");
+  console.log(items.length);
 
   let play = false;
 
@@ -162,9 +173,10 @@
 
 <main>
   <div>
-    <div class="ontop dark" id="btn-bar">
+    <div class="ontop light" id="btn-bar">
       <div id="progDiv">
         <Simulation
+		{items}
           on:stop="{() => (play = false)}"
           on:switchplay="{() => (play = !play)}"
           bind:this="{simulationComponent}"
@@ -191,7 +203,10 @@
               class="{items.length > 0
                 ? 'btn btn-primary play-button play-button'
                 : 'btn btn-primary disabled play-button play-forward-button play-button'}"
-              on:click="{simulationComponent.playClick}"
+               on:click="{() => {
+				debugger;
+				simulationComponent.playClick();
+			  }}"
             >
               {#if play}
                 <i class="bi bi-pause"></i>
@@ -208,7 +223,6 @@
               on:click="{simulationComponent.forwardsTick}"
               ><i class="bi bi-arrow-90deg-right"></i>
             </button>
-			
       </div>
     </div>
 

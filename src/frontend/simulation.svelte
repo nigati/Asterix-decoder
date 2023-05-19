@@ -29,9 +29,9 @@
     seeAll,
   } from "./arcgis/graphicsLayer";
 
-  let items: (Cat10 | Cat21)[] = [];
+  export let items: (Cat10 | Cat21)[] = [];
   const dispatch = createEventDispatcher();
-
+console.log(items.length);
   let i = 0;
   let j = 0;
   let slider = 0.1;
@@ -177,6 +177,7 @@
   }
 
   export function playClick() {
+    console.log("ESTOY EN PLAYCLICK")
     play = !play;
     dispatch("switchplay");
     if (seeAllBool) {

@@ -146,7 +146,7 @@
     align-items: center;
   }
   </style>
-  
+  S
   <script lang="ts" type="module">
 	import { initializeMap } from "./arcgis/map";
 
@@ -162,6 +162,7 @@
 	
 	
   let simulationComponent: Simulation;
+  console.log("play paly");
 
   let play = false;
   let loading = false;
@@ -185,6 +186,8 @@
 	  await ipcMainBi("save-kml");
   
 	  console.log("KML file written");
+
+
 	}
   
 	
@@ -234,6 +237,7 @@
 			  type="button"
 			  class="btn btn-primary"
 			  on:click="{simulationComponent.playClick}"
+			  
 			>
 			  {#if play}
 				<i class="bi bi-pause"></i>

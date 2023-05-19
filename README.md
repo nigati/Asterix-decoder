@@ -3,7 +3,8 @@
 <h4 align="center">This program is used to decode .ast files as well as visualize and analyze the Cat10 (SMR and MLAT) and Cat21 (ADS-B) items.</h4>
 </div>
 
-<h2>Windows Insaller <a>Download Link</a>!</h2>
+<h2>Windows Installer <a>Download Link</a>!</h2>
+<h2>MacOS <a>Download Link</a>!</h2>
 </div>
 <details>
   <summary><h3>Introduction</h3></summary>
@@ -67,25 +68,9 @@ Access to detailed information: Some data items have additional information. You
 -Move forwards and backwards: Enables navigation through different time points in the simulation.
 -Change the speed of the simulation time: Adjusts the playback speed of the simulation.
 -Choose the type of traffic to display: Allows you to select the specific type of traffic (e.g., airplanes) you want to see in the simulation.
--Click on airplane paths for information: By clicking on the path of an airplane, you can access the main information contained in its message at that particular moment.</p>
+-Click on airplane paths for information: By clicking on the path of an airplane, you can access the main information contained in its message at that particular moment.
 These simulation controls give users the ability to interact with the application, customize their viewing experience, and access detailed information about individual airplanes. Additionally, the option to view the airplanes in 3D enhances the visual representation of the simulation.
-
-  <h5>Export data to csv...</h5>
-    <div align="center">
-  <img src="https://github.com/PauBaguer/asterix-visualizer/blob/master/assets/DataCsv.gif" width = 80%>
-  </div>
-  <h5>Export routes to kml...</h5>
-    <div align="center">
-  <img src="https://github.com/PauBaguer/asterix-visualizer/blob/master/assets/DataKml.gif" width = 80%>
-  
-<h5>Other extras</h5>
-    <p align="justify">
-    - Data Item I021/090 Quality Indicators decodification
-    </p>
-
-</details>
-
-
+</p>
 <h3> Team members</h3>
 
 - Daniel Carneros Mateu</li>
@@ -93,4 +78,5 @@ These simulation controls give users the ability to interact with the applicatio
 - José Ramón Iniesta Expósito</li>
 - Hatim Benallal Benallal</li>
 - Nicolai Galici-Tiscenco</li>
+</details>
 

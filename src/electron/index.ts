@@ -14,7 +14,7 @@ import logger from "./utils/logger";
 import settings from "./utils/settings";
 
 
-import { loadFileIpc, loadItems, loadItemsSlave, sliceItems, test1 } from "./utils/ipcMain";
+import { loadFileIpc, loadItems, loadItemsSlave, sliceItems, test1, writeKmlFile } from "./utils/ipcMain";
 import { openFile } from "./utils/file_picker";
 const isProd = process.env.NODE_ENV === "production" || app.isPackaged;
 
@@ -62,6 +62,7 @@ const createWindow = () => {
   ipcMain.handle('load-file',loadFileIpc);
   ipcMain.handle('load-items',loadItemsSlave);
   ipcMain.handle('slice-em-up',sliceItems);
+  ipcMain.handle("save-kml", writeKmlFile);
 };
 
 app.on("ready", createWindow);

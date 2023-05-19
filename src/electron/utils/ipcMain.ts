@@ -1,7 +1,7 @@
 import { Cat10 } from "../models/cat10";
 import { Cat21 } from "../models/cat21";
 import { classify_data, block_slicer } from "./classifier";
-import { openFile, openTestFile } from "./file_picker";
+import { openFile, openTestFile, saveFileKml } from "./file_picker";
 import { Worker } from "node:worker_threads";
 
 
@@ -54,7 +54,12 @@ export function sliceItems() {
   return result;
 }
 
-
+export async function writeKmlFile() {
+  const picker = await saveFileKml();
+  if (!picker.filePath) return;
+  await runWorkerkml({ messagesLength: decodedItems.length, filePath: picker.filePath });
+  console.log(`${picker.filePath} written`);
+}
 
 
 export async function loadItemsSlave(_event: any, _messageQuantity: number) {
@@ -63,6 +68,30 @@ export async function loadItemsSlave(_event: any, _messageQuantity: number) {
   decodedItems = result;
 
   return [];
+}
+
+function runWorkerkml(workerData: any) {
+  return new Promise((resolve, reject) => {
+    const worker = new Worker(__dirname + "/kml_worker.js", { workerData });
+    let result: any;
+    worker.on("message", (val: any) => {
+      result = val;
+    });
+    worker.on("error", reject);
+    worker.on("exit", (code) => {
+      if (code !== 0) {
+        console.log(new Error("Exit worker with code: " + code));
+      } else {
+        resolve(result);
+      }
+    });
+    if (decodedItems.length > 300000) {
+      worker.postMessage(decodedItems.slice(0, 300000));
+      worker.postMessage(decodedItems.slice(300000, decodedItems.length));
+    } else {
+      worker.postMessage(decodedItems);
+    }
+  });
 }
 
 function runSlave(workerData: any) {

@@ -1,92 +1,82 @@
-# electron-svelte-typescript
+<div align="center">
+<h1 align="center">ASTERIX Message decoder</h1>
+<h4 align="center">This program is used to decode .ast files as well as visualize and analyze the Cat10 (SMR and MLAT) and Cat21 (ADS-B) items.</h4>
+</div>
 
-Template for apps written with [Electron](https://github.com/electron/electron), [Svelte](https://github.com/sveltejs/svelte) and [Typescript](https://github.com/microsoft/TypeScript).
+<h2>Windows Installer <a>Download Link</a>!</h2>
+<h2>MacOS <a>Download Link</a>!</h2>
+</div>
+<details>
+  <summary><h3>Introduction</h3></summary>
+  <p align="justify">The ASTERIX protocol is an ATM surveillance data binary messaging format used for exchanging information between surveillance and automation systems. It is designed to optimize data transmission with limited bandwidth while preserving all necessary information. The software decodes Cat 10 for SMR and MLAT (Surface Movement Radar and Multilateration) and Cat 21 for ADS-B (Automatic Dependent Surveillance-Broadcast). It enables the analysis of real traffic on the airport surface, including approximate positions, takeoffs, and ADS-B trajectories during surface operations and in-flight. SMR detects and locates targets in airport maneuvering and parking areas, while MLAT uses multiple receivers to triangulate the position of aircraft or ground vehicles. ADS-B relies on aircraft-supplied data, including flight identification, position, and other relevant parameters obtained from onboard systems. </p>
+</details>
 
-The template does hot module replacement and reloads electron on main process file changes out of the box.
-It also follows some good security practices, such as Content-Security-Policy meta tags in html,
-context isolation set to true, remote modules set to false etc.
+<details>
+  <summary><h3>Structure</h3></summary>
 
-## Get started
+  <h4>General Structure </h4>
 
-To create a new project based on this template you must first clone the repo and then delete the folder .git:
+<p align="justify">This application utilizes web technologies such as JavaScript (including TypeScript), HTML, and CSS. It is built on the Electron framework, which provides two main threads: Main and Renderer. These threads resemble a server-client relationship, where the Renderer acts as the web client and the Main thread serves as the server. Inter-process communication (IPC) facilitates communication between the two threads, functioning as a fast HTTP-based information exchange. The application offloads heavy calculations, such as file decoding, writing, and performance parameter calculations, to separate processes called Workers. The Main thread includes the main file (index.ts) responsible for launching the application and managing the Renderer thread. Additionally, various IPC-triggered functions are executed in response to events sent by the Renderer, such as opening a file or retrieving the first 10000 messages from a list.</p>
 
-```bash
-git clone https://github.com/fuzzc0re/electron-svelte-typescript MyAppName
-cd MyAppName
-rm -rf .git
-```
 
-_Note that you will need to have [Node.js](https://nodejs.org) installed._
+- loadFileIpc: open the file picker and load a file.
 
-Install the dependencies...
+- block_slicer: slice a whole file Buffer into buffers containing individual messages.
 
-```bash
-npm i
-```
+- getMessagesIpcWorker: decodes the messages using a worker.
 
-...then start coding in dev mode:
+- getMessagesIpcSlices: sends 10000 decoded messages.
 
-```bash
-npm start
-```
+- writeKmlFile: Write a kml file in a separate Worker.
 
-The start script spins up [Rollup](https://github.com/rollup/rollup)
-in watch mode with a [Rollup-Plugin-Serve](https://github.com/thgh/rollup-plugin-serve) instance
-serving the frontend static files on [localhost:5000](http://localhost:5000) and a
-nodemon server to watch for file changes related to the main electron process.
+<p align="justify">Within the Renderer thread, the application is organized into files that describe the rendered objects and pages (with the .svelte extension) as well as scripts (with the .ts extension) that handle the logic for the Map and Simulation. The primary Svelte files include App.svelte, which defines the general structure and Map component, ExpandableTable.svelte for the table view, and Parameters.svelte for the performance parameters view. On the script side, map.ts is responsible for initializing the map, graphicsLayer.ts manages the logic for 3D objects and layer management, groundLayer.ts handles ground markers and layer management, and areaLayer.ts defines ground areas. Additionally, Simulation.svelte is responsible for the simulation logic and rendering associated controls. Some of the workload is offloaded to Web Workers to ensure smoother operation and prevent blocking the main thread during computationally intensive tasks.</p>
 
-Electron loads its html content from [localhost:5000](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/src/electron/index.ts#L40)
-in dev mode and from [build/public/index.html](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/src/electron/index.ts#L38)
-in production mode.
+  <h4>
+Used software and libraries</h4>
 
-The Svelte development happens in [src/frontend](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/src/frontend) and the Electron development in [src/electron](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/src/electron).
+The Web Application utilizes several libraries, including:
 
-Edit a file in `src`, save it, and see the changes in the app.
+·ElectronJS: Enables the creation of cross-platform desktop applications using web technologies.
+·Typescript: Adds type safety to JavaScript, enhancing the developer experience.
+·Svelte.js: A frontend compiler that offers a reactive DOM and improved performance for building dynamic web applications.
+·ArcGIS API for JavaScript: A lightweight and powerful library for embedding maps and visualizing data in web applications.
+·Bootstrap 5: A CSS framework that provides a range of UI components, such as buttons, menus, and sliders.
 
-## Building and running in production mode
+In addition, other libraries used include Geolib for coordinate conversion and geometric operations, GeoJSON for quick conversion to KML, and Array-search for efficient searches.
 
-To create an optimized build of the app:
 
-```bash
-npm run build
-```
+<details>
+  <summary><h3>How to</h3></summary>
+  <h5>Installation</h5>
+  <p>Download the <a href="https://github.com/PauBaguer/asterix-visualizer/releases/tag/0.1.0" >executable</a> for Windows</p>
+  <h5>First steps</h5>
+  <p align="justify">On the home page you can visualize some of the usage tips of the program and the team members.</p>
+  <p align="justify">To begin, one has to load a file using the Load File menu. Pressing the button will open a prompt to select a file. Files must have .ast extension</p>
+    <br>
+<h5>Explore the table</h5>
+  <p align="justify">The Web Application provides a range of information through the data items of the messages. Here are some of the capabilities it offers:</p>
+<p align="justify">
+Filter by category, system, and message type: You can apply filters to view messages based on their category, system, or message type. This allows you to focus on specific subsets of data.
+</p>
+<p align="justify">
+Access to detailed information: Some data items have additional information. You can click the button to expand a row and visualize extra information.
+</p>
+  <h5>Map and simulation</h5>
+  <p align="justify">The simulation controls in the Web Application provide various functionalities:
 
-To create a distributable version of the app with [electron-builder](https://github.com/electron-userland/electron-builder):
+-Start, stop, and restart the simulation: Allows you to control the execution of the simulation.
+-Move forwards and backwards: Enables navigation through different time points in the simulation.
+-Change the speed of the simulation time: Adjusts the playback speed of the simulation.
+-Choose the type of traffic to display: Allows you to select the specific type of traffic (e.g., airplanes) you want to see in the simulation.
+-Click on airplane paths for information: By clicking on the path of an airplane, you can access the main information contained in its message at that particular moment.
+These simulation controls give users the ability to interact with the application, customize their viewing experience, and access detailed information about individual airplanes. Additionally, the option to view the airplanes in 3D enhances the visual representation of the simulation.
+</p>
+<h3> Team members</h3>
 
-```bash
-npm run dist
-```
+- Daniel Carneros Mateu</li>
+- Pablo Carreras Escudero</li>
+- José Ramón Iniesta Expósito</li>
+- Hatim Benallal Benallal</li>
+- Nicolai Galici-Tiscenco</li>
+</details>
 
-In production mode, sourcemaps are [disabled](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/scripts/preBuild.js#L30),
-[html](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/scripts/postBuild.js#L77)
-[css](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/scripts/postBuild.js#L104) and
-[js](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/rollup.config.js#L83) files are compressed and mangled, devTools are [disabled](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/src/electron/index.ts#L28) and
-[CSP](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/scripts/postBuild.js#L82) allows only same origin scripts to load.
-
-## Contributing
-
-In order to lint the code you run:
-
-```bash
-npm run lint
-```
-
-In order to prettify the code you run:
-
-```bash
-npm run format
-```
-
-You should run the following command, which runs lint and then format, on your contributed code:
-
-```bash
-npm run preversion
-```
-
-before creating a pull request.
-
-All suggestions are welcome!
-
-## Licence
-
-This project is licensed under the terms described in [LICENSE](https://github.com/fuzzc0re/electron-svelte-typescript/blob/master/LICENSE).

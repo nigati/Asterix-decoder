@@ -1,5 +1,5 @@
 <style>
-	main {
+  main {
     margin: 0 auto;
     top: 0px;
     bottom: 0px;
@@ -48,21 +48,6 @@
     border-radius: 10px;
     left: 50%;
     transform: translate(-50%, 0);
-    width: max-content;
-  }
-
-  #settings {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    justify-content: center;
-    bottom: 20px;
-    background-color: #222222;
-
-    padding: 10px;
-    border-radius: 10px;
-    left: 10px;
-
     width: max-content;
   }
 
@@ -145,150 +130,92 @@
     justify-content: center;
     align-items: center;
   }
-  </style>
-  S
-  <script lang="ts" type="module">
-	import { initializeMap } from "./arcgis/map";
+</style>
 
-	import {  ipcMainBi  } from "./ipcMain";
+<script lang="ts" type="module">
+  import { initializeMap } from "./arcgis/map";
 
-	import Simulation from "./simulation.svelte";
-	import PlanesComponent from "./planesComponent.svelte";
-	import ExpandableTable from "./ExpandableTable.svelte";
-	
-	  
+  import { ipcMainBi } from "./ipcMain";
 
-  
-	
-	
+  import Simulation from "./simulation.svelte";
+  import PlanesComponent from "./planesComponent.svelte";
+  import type { Cat10 } from "./models/cat10";
+  import type { Cat21 } from "./models/cat21";
+
+  export let items: (Cat10 | Cat21)[] = [];
   let simulationComponent: Simulation;
   console.log("play paly");
 
   let play = false;
-  let loading = false;
 
-  
-  
+  initializeMap();
 
-  
-	
-  
-  
-	initializeMap();
-  
-<<<<<<< HEAD
-  
-=======
+  async function kml_file() {
+    console.log("Creating kml file");
 
->>>>>>> 50b58c25569375c5cf93b27ef4b2095fc907e825
-	let visibleItem = "MAP";
-	
-  
-	async function kml_file() {
-	  console.log("Creating kml file");
-  
-	  await ipcMainBi("save-kml");
-  
-	  console.log("KML file written");
+    await ipcMainBi("save-kml");
+
+    console.log("KML file written");
+  }
+</script>
 
 
-	}
-  
-	
-  </script>
-  
-  <main>
-<<<<<<< HEAD
-	<div class="{visibleItem === 'MAP' ? 'main overflow' : 'main'}">
-	  
-	  {#if visibleItem === "MAP"}
-=======
-	<div >
-	  
-	 
->>>>>>> 50b58c25569375c5cf93b27ef4b2095fc907e825
-		
-  
-		
-		<div class="ontop dark" id="btn-bar">
-		  <div id="progDiv">
-			<Simulation
-			  on:stop="{() => (play = false)}"
-			  on:switchplay="{() => (play = !play)}"
-			  bind:this="{simulationComponent}"
-			/>
-		  </div>
-		  <div>
-			<button
-			  type="button"
-			  class="btn btn-primary"
-			  on:click="{kml_file}"
-			  ><i class="bi bi-file-earmark-image"></i>
-			</button>
-			
-			<button
-			  type="button"
-			  class="btn btn-primary"
-			  on:click="{simulationComponent.backwardsTick}"><i class="bi bi-arrow-90deg-left"></i></button
-			>
-			<button
-			  type="button"
-			  class="btn btn-primary"
-			  on:click="{simulationComponent.restartSim}"
-			  ><i class="bi bi-arrow-counterclockwise"></i>
-			</button>
-			<button
-			  type="button"
-			  class="btn btn-primary"
-			  on:click="{simulationComponent.seeAllPlanes}"
-			  ><i class="bi bi-airplane"></i>
-			</button>
-			<button
-			  type="button"
-			  class="btn btn-primary"
-			  on:click="{simulationComponent.playClick}"
-			  
-			>
-			  {#if play}
-				<i class="bi bi-pause"></i>
-			  {:else}
-				<i class="bi bi-play"></i>
-			  {/if}
-			</button>
-  
-			<button
-			  type="button"
-			  class="btn btn-primary"
-			  on:click="{simulationComponent.forwardsTick}"
-			  ><i class="bi bi-arrow-90deg-right"></i>
-			</button>
-		  </div>
-		</div>
-  
-		<div class="btn btn-primary" id="planes">
-		  <PlanesComponent />
-		</div>
-  
-		<div id="viewDiv"></div>
-	  
-  
-	  {#if visibleItem === "MESSAGE_DECODER"}
-      <div>
-        <ExpandableTable />
+<main>
+  <div>
+    <div class="ontop dark" id="btn-bar">
+      <div id="progDiv">
+        <Simulation
+          on:stop="{() => (play = false)}"
+          on:switchplay="{() => (play = !play)}"
+          bind:this="{simulationComponent}"
+        />
       </div>
-    {/if}
-    
-	  
-	</div>
-  
-	{#if loading == true}
-	  <div id="overlay">
-		<div class="d-flex justify-content-center">
-		  <div class="spinner-border" role="status">
-			<span class="visually-hidden">Loading...</span>
-		  </div>
-		</div>
-	  </div>
-	{/if}
-  </main>
-  
+      <div>
+        <button
+              type="button"
+              class="{items.length > 0
+                ? 'btn btn-primary play-back-button'
+                : 'btn btn-primary disabled play-back-button'}"
+              on:click="{simulationComponent.restartSim}"
+              ><i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+            <button
+              type="button"
+              class="{items.length > 0
+                ? 'btn btn-primary play-back-button'
+                : 'btn btn-primary disabled play-back-button'}"
+              on:click="{simulationComponent.backwardsTick}"><i class="bi bi-arrow-90deg-left"></i></button
+            >
+            <button
+              type="button"
+              class="{items.length > 0
+                ? 'btn btn-primary play-button play-button'
+                : 'btn btn-primary disabled play-button play-forward-button play-button'}"
+              on:click="{simulationComponent.playClick}"
+            >
+              {#if play}
+                <i class="bi bi-pause"></i>
+              {:else}
+                <i class="bi bi-play"></i>
+              {/if}
+            </button>
+
+            <button
+              type="button"
+              class="{items.length > 0
+                ? 'btn btn-primary play-forward-button'
+                : 'btn btn-primary disabled play-forward-button'}"
+              on:click="{simulationComponent.forwardsTick}"
+              ><i class="bi bi-arrow-90deg-right"></i>
+            </button>
+			
+      </div>
+    </div>
+
+    <div class="btn btn-primary" id="planes">
+      <PlanesComponent />
+    </div>
+	<div id="viewDiv"></div>
+
+  </div>
+</main>

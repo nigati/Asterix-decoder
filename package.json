@@ -118,13 +118,19 @@
     
     "copyright": "Copyright © 2023 ${author}",
     "win": {
-      "icon": "./assets/icon.png",
       "target": [
         "nsis"
       ]
     },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "./assets/ast.png",
+      "uninstallerIcon": "./assets/ast.png",
+      "installerHeaderIcon": "./assets/ast.png"
+    },
     "mac": {
-      "icon": "./assets/icon.png",
+      "icon": "./assets/ast.png",
       "target": [
         "dmg"
       ],
@@ -133,7 +139,7 @@
       "hardenedRuntime": "true"
     },
     "linux": {
-      "icon": "./assets/icon.png",
+      "icon": "./assets/ast.png",
       "target": [
         "AppImage",
         "snap"

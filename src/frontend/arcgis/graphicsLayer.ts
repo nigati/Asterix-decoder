@@ -70,11 +70,6 @@ const popupTemplate = {
 
 export const planeMap: Map<string, Plane> = new Map();
 
-// const symbol = new SimpleMarkerSymbol({
-//   style: "circle",
-//   color: "#009900",
-// });
-
 export function loadGraphicsLayer(map: ArcGISMap) {
   planesLayer = new GraphicsLayer({ elevationInfo: { mode: "relative-to-ground" } });
   pathsLayer = new GraphicsLayer({ elevationInfo: { mode: "relative-to-ground" } });
@@ -90,7 +85,6 @@ export function parseADSBmessage(msg: Cat21) {
     if (msg.target_address === selectedPlane) {
       updatePlane(msg);
     }
-    //updatePath(msg);
   } else {
     const newPlaneEvent = new CustomEvent("new-plane", { detail: msg });
     elem.dispatchEvent(newPlaneEvent);
@@ -98,24 +92,13 @@ export function parseADSBmessage(msg: Cat21) {
     let geometric_height = 0;
     let level = 0;
     let heading = 0;
-    // if (msg.geometric_height) {
-    //   geometric_height = parseFloat(msg.geometric_height.substring(0, msg.geometric_height.length - 3));
-    // }
-    // if (msg.flight_level) {
-    //   level = parseFloat(msg.flight_level.substring(2));
-    // }
-    // if (msg.airborne_ground_vector) {
-    //   heading = parseFloat(
-    //     msg.airborne_ground_vector.TrackAngle.substring(0, msg.airborne_ground_vector.TrackAngle.length - 4)
-    //   );
-    // }
+    
 
     const newPlane: Plane = {
       longitude: 0,
       latitude: 0,
       level,
       geometric_height,
-      // mlat_msgs: [],
       adsb_msgs: [msg],
       target_identification: msg.target_identification,
       target_address: msg.target_address,

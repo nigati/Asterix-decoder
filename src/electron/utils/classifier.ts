@@ -245,21 +245,19 @@ export async function decodeClass10Messages(msg: Buffer, id: number): Promise<Ca
       }
       return;
     }).length + 3;
-  // console.log("length fspec " + offset);
 
   var decod_msg: Cat21 = new Cat21(id);
   var tasks: any[] = [];
 
-  /** MANDATORY FIELD**/
+  
   /// I021/010 Data Source Identifier
   tasks.push(decod_msg.set_data_source_identifier(msg.subarray(offset, offset + 2)));
   offset += 2; //length =2
 
   /// I021/040 Target Report Descriptor
-  let len = variableItemOffset(msg.subarray(offset, offset + 3), 3); // Primary Subfield + First Extension + Second Extension => max3
+  let len = variableItemOffset(msg.subarray(offset, offset + 3), 3); 
   tasks.push(decod_msg.set_target_report_descriptor(msg.subarray(offset, offset + len)));
-  offset += len; //length =1+
-  /********************/
+  offset += len; 
 
   if (fspec[2] === "1") {
     /// I021/161 Track Number
@@ -285,9 +283,7 @@ export async function decodeClass10Messages(msg: Buffer, id: number): Promise<Ca
   if (fspec[6] === "1") {
     /// I021/131 Position in WGS-84 co-ordinates, high res.
     if (msg.subarray(offset, offset + 8).length == 0) {
-      /* console.log("Zero buffer");
-      console.log(fspec);
-      console.log(msg); */
+      
     }
     tasks.push(decod_msg.set_wgs_84_coordinates_high(msg.subarray(offset, offset + 8)));
     offset += 8; //length =8
@@ -314,7 +310,7 @@ export async function decodeClass10Messages(msg: Buffer, id: number): Promise<Ca
     /// I021/080 Target Address
     tasks.push(decod_msg.set_target_address(msg.subarray(offset, offset + 3)));
     offset += 3; //length =3
-    /*******************/
+   
     if (fspec[12] === "1") {
       /// I021/073 Time of Message Reception of Position
       tasks.push(decod_msg.set_time_message_reception_position(msg.subarray(offset, offset + 3)));
@@ -343,12 +339,12 @@ export async function decodeClass10Messages(msg: Buffer, id: number): Promise<Ca
         tasks.push(decod_msg.set_geometric_height(msg.subarray(offset, offset + 2)));
         offset += 2; //length =2
       }
-      /*** MANDATORY ITEM ***/
+     
       /// I021/090 Quality Indicators
       let len = variableItemOffset(msg.subarray(offset, offset + 4), 4); // Primary Subfield + First extension + Second extension + Third Extension => max 4
       tasks.push(decod_msg.set_quality_indicator(msg.subarray(offset, offset + len)));
       offset += len; //length =1+
-      /*********************/
+      
       if (fspec[19] === "1") {
         /// I021/210 MOPS Version
         tasks.push(decod_msg.set_mops_version(msg.subarray(offset, offset + 1)));
@@ -422,9 +418,9 @@ export async function decodeClass10Messages(msg: Buffer, id: number): Promise<Ca
           }
           if (fspec[34] === "1") {
             /// I021/220 Met Information
-            let fields: string[] = []; // Primary Subfield + 2* Subfield #1 + 2* Subfield #2 + 2* Subfield #3 + Subfield #4 => max 8
+            let fields: string[] = []; 
             let len = 1;
-            BigInt("0x" + msg.toString("hex")) //TODO this was buffer, i think its wrong
+            BigInt("0x" + msg.toString("hex")) 
               .toString(2)
               .padStart(8, "0")
               .split("")
@@ -470,7 +466,6 @@ export async function decodeClass10Messages(msg: Buffer, id: number): Promise<Ca
           }
           if (fspec[37] === "1") {
             /// I021/110 Trajectory Intent
-            /// Primary Subfield + Subfield #1 + 16 * Subfield #2 => max 18
             const bits = BigInt("0x" + msg.subarray(offset, offset + 1).toString("hex"))
               .toString(2)
               .padStart(8, "0")
@@ -506,7 +501,7 @@ export async function decodeClass10Messages(msg: Buffer, id: number): Promise<Ca
             }
             if (fspec[41] === "1") {
               /// I021/271 Surface Capabilities and Characteristics
-              let len = variableItemOffset(msg.subarray(offset, offset + 2), 2); // Primary Subfield + First extension => max 2
+              let len = variableItemOffset(msg.subarray(offset, offset + 2), 2); 
               tasks.push(decod_msg.set_surface_capabilities_and_characteristics(msg.subarray(offset, offset + len)));
               offset += len; //length =1+
             }

@@ -68,7 +68,7 @@
     "flowbite-svelte": "^0.34.9",
     "helmet": "^7.0.0",
     "helmet-csp": "^3.4.0",
-    "leaflet": "^1.9.3",
+    "leaflet": "^1.9.4",
     "svelte-bootstrap-icons": "^2.3.1"
   },
   "devDependencies": {

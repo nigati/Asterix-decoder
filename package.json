@@ -60,6 +60,7 @@
     "preversion": "npm-run-all -s lint format"
   },
   "dependencies": {
+    "@arcgis/core": "^4.26.5",
     "bootstrap": "^5.3.0-alpha3",
     "electron-log": "^4.3.5",
     "electron-store": "^8.0.0",

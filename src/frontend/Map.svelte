@@ -159,37 +159,9 @@
 	let settings = false;
 	
   
-	let performanceData = false;
   
 	initializeMap();
   
-	
-  
-	
-  
-	
-	async function handleMapClick() {
-	  visibleItem = "MAP";
-  
-	  initializeMap();
-	  if (items.length > 0) {
-		setTimeout(() => {
-		  simulationComponent.initializeSimulation!(items);
-		}, 750);
-	  }
-	}
-  
-	async function handleMessageDecoderClick() {
-	  if (visibleItem === "MAP") simulationComponent.restartSim();
-	  visibleItem = "MESSAGE_DECODER";
-	}
-  
-	async function handleParametersResultsClick() {
-	  if (visibleItem === "MAP") simulationComponent.restartSim();
-	  visibleItem = "PARAMETERS_RESULTS";
-	}
-  
-	
   
 	let visibleItem = "MAP";
 	
@@ -209,36 +181,7 @@
   
   <main>
 	<div class="{visibleItem === 'MAP' ? 'main overflow' : 'main'}">
-	  {#if items.length > 0}
-		<ul class="nav nav-tabs">
-		  <!-- svelte-ignore a11y-click-events-have-key-events -->
-		  <li class="nav-item" on:click="{handleMapClick}">
-			<a class="{visibleItem === 'MAP' ? 'nav-link active' : 'nav-link'}" href="#a">MAP</a>
-		  </li>
-		  <!-- svelte-ignore a11y-click-events-have-key-events -->
-		  <li class="nav-item" on:click="{handleMessageDecoderClick}">
-			<a class="{visibleItem === 'MESSAGE_DECODER' ? 'nav-link active' : 'nav-link'}" href="#a">Table view</a>
-		  </li>
-		  <!-- svelte-ignore a11y-click-events-have-key-events -->
-		  <li class="nav-item" on:click="{handleParametersResultsClick}">
-			<a
-			  class="{performanceData
-				? visibleItem === 'PARAMETERS_RESULTS'
-				  ? 'nav-link active'
-				  : 'nav-link'
-				: 'nav-link disabled'}"
-			  href="#a">ED-117 Parameters</a
-			>
-		  </li>
-		</ul>
-	  {:else}
-		<ul class="nav nav-tabs">
-		  <li class="nav-item">
-			<a class="nav-link active" href="#a">MAP</a>
-		  </li>
-		 
-		</ul>
-	  {/if}
+	  
 	  {#if visibleItem === "MAP"}
 		
   

@@ -253,12 +253,7 @@
 		  <li class="nav-item">
 			<a class="nav-link active" href="#a">MAP</a>
 		  </li>
-		  <li class="nav-item">
-			<a class="nav-link disabled" href="#a">Table view</a>
-		  </li>
-		  <li class="nav-item">
-			<a class="nav-link disabled" href="#a">ED-117 Parameters</a>
-		  </li>
+		 
 		</ul>
 	  {/if}
 	  {#if visibleItem === "MAP"}

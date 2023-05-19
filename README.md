@@ -3,8 +3,8 @@
 <h4 align="center">This program is used to decode .ast files as well as visualize and analyze the Cat10 (SMR and MLAT) and Cat21 (ADS-B) items.</h4>
 </div>
 
-<h2>Windows Installer <a>Download Link</a>!</h2>
-<h2>MacOS <a>Download Link</a>!</h2>
+<h2>Windows Installer <a href="https://drive.google.com/drive/folders/17WjaB2wWBFsYP7G5R81U3n9D2PKpx2aH?usp=sharing">Download Link</a>!</h2>
+<h2>MacOS <a href= "https://drive.google.com/drive/folders/1dxzmNPiawd4wEeBNpgtVkrv9zHk-JHqx?usp=sharing">Download Link</a>!</h2>
 </div>
 <details>
   <summary><h3>Introduction</h3></summary>

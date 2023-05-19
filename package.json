@@ -115,13 +115,16 @@
   "build": {
     "productName": "Asterix decoder",
     "appId": "asterix.decoder",
+    
     "copyright": "Copyright © 2023 ${author}",
     "win": {
+      "icon": "./assets/icon.png",
       "target": [
         "nsis"
       ]
     },
     "mac": {
+      "icon": "./assets/icon.png",
       "target": [
         "dmg"
       ],
@@ -130,6 +133,7 @@
       "hardenedRuntime": "true"
     },
     "linux": {
+      "icon": "./assets/icon.png",
       "target": [
         "AppImage",
         "snap"

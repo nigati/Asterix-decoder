@@ -1545,7 +1545,7 @@
         {/if}
       </section>
     {:else if activeWindow === "extra"}
-      <h2>Extra</h2>
+      <h2>Extra WORK IN PROGRESS</h2>
     {/if}
   </main>
 </div>

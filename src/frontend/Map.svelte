@@ -135,20 +135,34 @@
 <script lang="ts" type="module">
   import { initializeMap } from "./arcgis/map";
 
+
   import { ipcMainBi } from "./ipcMain";
 
+
   import Simulation from "./simulation.svelte";
-  import PlanesComponent from "./planesComponent.svelte";
   import type { Cat10 } from "./models/cat10";
   import type { Cat21 } from "./models/cat21";
 
   export let items: (Cat10 | Cat21)[] = [];
   let simulationComponent: Simulation;
+  
+    
   console.log("play paly");
 
   let play = false;
-
+  
   initializeMap();
+  
+  async function handleMapClick() {
+    visibleItem = "MAP";
+
+    
+    if (items.length > 0) {
+      setTimeout(() => {
+        simulationComponent.initializeSimulation!(items);
+      }, 750);
+    }
+  }
 
   async function kml_file() {
     console.log("Creating kml file");
@@ -157,11 +171,15 @@
 
     console.log("KML file written");
   }
+
+  let visibleItem = "MAP";
+  let i = 0;
 </script>
 
 
 <main>
-  <div>
+  <div class="{visibleItem === 'MAP' ? 'main overflow' : 'main'}">
+    
     <div class="ontop dark" id="btn-bar">
       <div id="progDiv">
         <Simulation
@@ -183,6 +201,10 @@
                 ? 'btn btn-primary play-back-button'
                 : 'btn btn-primary disabled play-back-button'}"
               on:click="{simulationComponent.restartSim}"
+              on:click="{() => {
+                simulationComponent.restartSim;
+                i=0;
+              }}"
               ><i class="bi bi-arrow-counterclockwise"></i>
             </button>
             <button
@@ -197,7 +219,13 @@
               class="{items.length > 0
                 ? 'btn btn-primary play-button play-button'
                 : 'btn btn-primary disabled play-button play-forward-button play-button'}"
-              on:click="{simulationComponent.playClick}"
+              on:click="{() => {
+                simulationComponent.playClick();
+                if (i === 0) {
+                  handleMapClick();
+                  i = 1;
+                }
+              }}"
             >
               {#if play}
                 <i class="bi bi-pause"></i>
@@ -218,9 +246,7 @@
       </div>
     </div>
 
-    <div class="btn btn-primary" id="planes">
-      <PlanesComponent />
-    </div>
+    
 	<div id="viewDiv"></div>
 
   </div>

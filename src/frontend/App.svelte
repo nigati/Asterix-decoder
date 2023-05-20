@@ -234,6 +234,7 @@
   let totalPages: (Cat10 | Cat21)[][] = [];
   let currentPageRows: (Cat10 | Cat21)[] = [];
   let itemsPerPage = 100;
+  
 
   var csv: string[] = [];
 
@@ -452,7 +453,9 @@
         </a>
       </li>
       <li class="{activeWindow === 'map' ? 'active' : ''}{items.length === 0 ? 'disabled' : ''}">
-        <a href="#map" on:click="{() => handleNavClick('map')}">
+        <a href="#map" on:click="{() => {
+          handleNavClick('map')
+        }}">
           <MapIcon /> Map
         </a>
       </li>

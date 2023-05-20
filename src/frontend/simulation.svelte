@@ -26,7 +26,7 @@
     addPath,
     shortenPath,
     clearSeeAll,
-    seeAll,
+    
   } from "./arcgis/graphicsLayer";
 
   export let items: (Cat10 | Cat21)[] = [];
@@ -43,7 +43,7 @@ console.log(items.length);
   let play = false;
   let timer: number;
 
-  export function initializeSimulation(msgs: (Cat10 | Cat21)[]) {
+  export function initSimulation(msgs: (Cat10 | Cat21)[]) {
     i = 0;
 
     items = msgs;
@@ -55,9 +55,9 @@ console.log(items.length);
     }
 
     if (items[items.length - 1].cat === "Cat10") {
-      simEndTime = getDateCat10(items[items.length - 1] as Cat10).getTime();
+      simEndTime = getDateCat10(items[items.length - 2] as Cat10).getTime();
     } else {
-      simEndTime = getDateCat21(items[items.length - 1] as Cat21).getTime();
+      simEndTime = getDateCat21(items[items.length - 2] as Cat21).getTime();
     }
 
     simTime = simStartTime;
@@ -71,24 +71,37 @@ console.log(items.length);
   }
 
   async function tickSimulation() {
+    console.log("11111111111111")
     if (simTime === simEndTime) return;
+    console.log("2222222222222")
     if (simTime + tick * slider > simEndTime) {
       simTime = simEndTime;
       stop();
+      
+      console.log(simTime)
+      console.log(simEndTime)
+      console.log(items.length)
+      console.log("3333333333333333")
     } else simTime += tick * slider;
-
+    console.log("44444444444444")
     while (getTime(items[i]) * 1000 < simTime) {
+      console.log("555555555555")
       if (items[i].cat === "Cat10") {
         //cat10
+        console.log("6666666666")
         const msg = items[i] as Cat10;
-        if (msg.message_type === "Target Report") {
+        if (msg.message_type === "Target Report") 
+        console.log("7777777777777777777")
+        {
           if (msg.data_src_id.SIC == "107") {
+            console.log("888888888888888")
             createGraphicMLAT(msg);
             // parseMLATmessage(msg);
           } else if (msg.data_src_id.SIC === "7") createGraphicSMR(msg);
         }
       } else {
         //cat21
+        console.log("999999999999")
         const msg = items[i] as Cat21;
         createGraphicADSB(msg);
         parseADSBmessage(msg);
@@ -96,11 +109,14 @@ console.log(items.length);
 
       const eraseTime = simTime - 10 * 60 * 1000; //min to sec to ms
       if (eraseTime > simStartTime) {
+        console.log("000000000000000000")
         while (getTime(items[j]) * 1000 < eraseTime) {
           if (items[j].cat === "Cat10") {
             //cat10
+            console.log("011010101010101010")
             const msg = items[j] as Cat10;
             if (msg.message_type === "Target Report") {
+              console.log("20202020202020202020")
               if (msg.data_src_id.SIC == "107") {
                 deleteGraphicMLAT(msg);
                 // parseMLATmessage(msg);
@@ -108,6 +124,7 @@ console.log(items.length);
             }
           } else {
             //cat21
+            console.log("3030303030303")
             const msg = items[j] as Cat21;
             deleteGraphicADSB(msg);
             shortenPath(msg);
@@ -198,7 +215,7 @@ console.log(items.length);
     simTime = 0;
     clearMap();
     clearGraphicsLayer();
-    initializeSimulation(items);
+    initSimulation(items);
   }
 
   export function forwardsTick() {
@@ -211,21 +228,7 @@ console.log(items.length);
     tickBackSimulation();
   }
   let seeAllBool = false;
-  export function seeAllPlanes() {
-    if (seeAllBool) {
-      seeAllBool = false;
-      clearSeeAll();
-    } else {
-      if (play) {
-        play = false;
-
-        dispatch("switchplay");
-        clearInterval(timer);
-      }
-      seeAllBool = true;
-      seeAll();
-    }
-  }
+  
 
   function getDateCat10(m: Cat10) {
     return new Date(m.time_of_day * 1000);

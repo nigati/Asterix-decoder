@@ -159,7 +159,7 @@
     
     if (items.length > 0) {
       setTimeout(() => {
-        simulationComponent.initializeSimulation!(items);
+        simulationComponent.initSimulation!(items);
       }, 750);
     }
   }

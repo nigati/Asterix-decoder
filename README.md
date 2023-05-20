@@ -3,8 +3,8 @@
 <h4 align="center">This program is used to decode .ast files as well as visualize and analyze the Cat10 (SMR and MLAT) and Cat21 (ADS-B) items.</h4>
 </div>
 
-<h2>Windows Installer <a>Download Link</a>!</h2>
-<h2>MacOS <a>Download Link</a>!</h2>
+<h2>Windows Installer <a href="https://drive.google.com/drive/folders/17WjaB2wWBFsYP7G5R81U3n9D2PKpx2aH?usp=sharing">Download Link</a>!</h2>
+<h2>MacOS <a href= "https://drive.google.com/drive/folders/1dxzmNPiawd4wEeBNpgtVkrv9zHk-JHqx?usp=sharing">Download Link</a>!</h2>
 </div>
 <details>
   <summary><h3>Introduction</h3></summary>
@@ -48,7 +48,7 @@ In addition, other libraries used include Geolib for coordinate conversion and g
 <details>
   <summary><h3>How to</h3></summary>
   <h5>Installation</h5>
-  <p>Download the <a href="https://github.com/PauBaguer/asterix-visualizer/releases/tag/0.1.0" >executable</a> for Windows</p>
+  <p>Download the <a href="https://drive.google.com/drive/folders/17WjaB2wWBFsYP7G5R81U3n9D2PKpx2aH?usp=sharing" >executable</a> for Windows</p>
   <h5>First steps</h5>
   <p align="justify">On the home page you can visualize some of the usage tips of the program and the team members.</p>
   <p align="justify">To begin, one has to load a file using the Load File menu. Pressing the button will open a prompt to select a file. Files must have .ast extension</p>

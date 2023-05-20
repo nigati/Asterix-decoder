@@ -50,20 +50,10 @@
     transform: translate(-50%, 0);
     width: max-content;
   }
-  .btn-primary{
-	padding: 0.5em 1em;
-    font-size: 1em;
-    background-color: #226d3a;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
 
   #legend {
     bottom: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: #222222;
 
     padding: 10px;
     border-radius: 10px;
@@ -78,7 +68,19 @@
     background-color: #222222;
     border-radius: 10px;
   }
-  
+  .bottom-planes {
+    bottom: 20px;
+    max-height: 650px;
+  }
+
+  .top-planes {
+    bottom: 215px;
+    max-height: 450px;
+  }
+  td {
+    vertical-align: middle;
+  }
+
   :global(.esri-view .esri-view-surface--inset-outline:focus::after) {
     outline: none !important;
   }
@@ -87,18 +89,53 @@
     margin-bottom: 3px;
   }
 
-  
-  
+  .color {
+    border-radius: 50%;
+    margin-left: 5px;
+    margin-right: 10px;
+    height: 10px;
+    width: 10px;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+  }
+  .color-round {
+    border-radius: 50%;
+    margin-right: 10px;
+    height: 20px;
+    width: 20px;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+  }
+
+  .color-area {
+    margin-left: 5px;
+    margin-right: 10px;
+    height: 15px;
+    width: 15px;
+    border-color: white;
+    border-style: solid;
+    border-width: 1px;
+  }
+
+  #overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 </style>
 
 <script lang="ts" type="module">
   import { initializeMap } from "./arcgis/map";
-<<<<<<< HEAD
 
 
-=======
-  import { fade } from "svelte/transition";
->>>>>>> a56291e29039d6c41094c1911629e86995a0f611
   import { ipcMainBi } from "./ipcMain";
 
 
@@ -111,11 +148,10 @@
   
     
   console.log("play paly");
-  console.log(items.length);
+
   let play = false;
   
   initializeMap();
-<<<<<<< HEAD
   
   async function handleMapClick() {
     visibleItem = "MAP";
@@ -128,8 +164,6 @@
     }
   }
 
-=======
->>>>>>> a56291e29039d6c41094c1911629e86995a0f611
   async function kml_file() {
     console.log("Creating kml file");
 
@@ -144,17 +178,11 @@
 
 
 <main>
-<<<<<<< HEAD
   <div class="{visibleItem === 'MAP' ? 'main overflow' : 'main'}">
     
     <div class="ontop dark" id="btn-bar">
-=======
-  <div>
-    <div class="ontop light" id="btn-bar">
->>>>>>> a56291e29039d6c41094c1911629e86995a0f611
       <div id="progDiv">
         <Simulation
-		{items}
           on:stop="{() => (play = false)}"
           on:switchplay="{() => (play = !play)}"
           bind:this="{simulationComponent}"
@@ -191,7 +219,6 @@
               class="{items.length > 0
                 ? 'btn btn-primary play-button play-button'
                 : 'btn btn-primary disabled play-button play-forward-button play-button'}"
-<<<<<<< HEAD
               on:click="{() => {
                 simulationComponent.playClick();
                 if (i === 0) {
@@ -199,12 +226,6 @@
                   i = 1;
                 }
               }}"
-=======
-               on:click="{() => {
-				debugger;
-				simulationComponent.playClick();
-			  }}"
->>>>>>> a56291e29039d6c41094c1911629e86995a0f611
             >
               {#if play}
                 <i class="bi bi-pause"></i>
@@ -221,37 +242,12 @@
               on:click="{simulationComponent.forwardsTick}"
               ><i class="bi bi-arrow-90deg-right"></i>
             </button>
+			
       </div>
     </div>
 
     
 	<div id="viewDiv"></div>
-	<div class="legend">
-        <div class="light" id="legend" transition:fade="{{ duration: 100 }}">
-          <div style="font-size: small">
-            <table>
-              <tr>
-                <td>
-                  <div class="color" style="background-color: #fe0000;"></div>
-                </td>
-                <td>SMR Data Point</td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="color" style="background-color: #ffeb16;"></div>
-                </td>
-                <td>MLAT Data Point</td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="color" style="background-color: #6733bb;"></div>
-                </td>
-                <td>ADS-B Data Point</td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </div>
 
   </div>
 </main>

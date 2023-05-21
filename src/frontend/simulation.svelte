@@ -26,42 +26,38 @@
     addPath,
     shortenPath,
     clearSeeAll,
-    seeAll,
+    
   } from "./arcgis/graphicsLayer";
 
-  let messages: (Cat10 | Cat21)[] = [];
-  // let msgToPlot: (Cat10 | Cat21)[] = [];
-  // let msgPlotted: (Cat10 | Cat21)[] = [];
+  export let items: (Cat10 | Cat21)[] = [];
   const dispatch = createEventDispatcher();
-
+console.log(items.length);
   let i = 0;
   let j = 0;
   let slider = 0.1;
   let simStartTime = 0;
   let simTime = 0;
-  const tick = 2000; //1 secconds per tick
-  let simEndTime = 0; //this is for the cat 10 file. make dynamic!!
+  const tick = 2000; 
+  let simEndTime = 0; 
 
   let play = false;
   let timer: number;
 
-  export function initializeSimulation(msgs: (Cat10 | Cat21)[]) {
+  export function initSimulation(msgs: (Cat10 | Cat21)[]) {
     i = 0;
 
-    messages = msgs;
-    // msgToPlot.push(...msgs);
-    // msgPlotted = [];
-
-    if (messages[0].cat === "Cat10") {
-      simStartTime = getDateCat10(messages[0]).getTime();
+    items = msgs;
+   
+    if (items[0].cat === "Cat10") {
+      simStartTime = getDateCat10(items[0]).getTime();
     } else {
-      simStartTime = getDateCat21(messages[0]).getTime();
+      simStartTime = getDateCat21(items[0]).getTime();
     }
 
-    if (messages[messages.length - 1].cat === "Cat10") {
-      simEndTime = getDateCat10(messages[messages.length - 1] as Cat10).getTime();
+    if (items[items.length - 1].cat === "Cat10") {
+      simEndTime = getDateCat10(items[items.length - 2] as Cat10).getTime();
     } else {
-      simEndTime = getDateCat21(messages[messages.length - 1] as Cat21).getTime();
+      simEndTime = getDateCat21(items[items.length - 2] as Cat21).getTime();
     }
 
     simTime = simStartTime;
@@ -75,36 +71,52 @@
   }
 
   async function tickSimulation() {
+    console.log("11111111111111")
     if (simTime === simEndTime) return;
+    console.log("2222222222222")
     if (simTime + tick * slider > simEndTime) {
       simTime = simEndTime;
       stop();
+      
+      console.log(simTime)
+      console.log(simEndTime)
+      console.log(items.length)
+      console.log("3333333333333333")
     } else simTime += tick * slider;
-
-    while (getTime(messages[i]) * 1000 < simTime) {
-      if (messages[i].cat === "Cat10") {
+    console.log("44444444444444")
+    while (getTime(items[i]) * 1000 < simTime) {
+      console.log("555555555555")
+      if (items[i].cat === "Cat10") {
         //cat10
-        const msg = messages[i] as Cat10;
-        if (msg.message_type === "Target Report") {
+        console.log("6666666666")
+        const msg = items[i] as Cat10;
+        if (msg.message_type === "Target Report") 
+        console.log("7777777777777777777")
+        {
           if (msg.data_src_id.SIC == "107") {
+            console.log("888888888888888")
             createGraphicMLAT(msg);
             // parseMLATmessage(msg);
           } else if (msg.data_src_id.SIC === "7") createGraphicSMR(msg);
         }
       } else {
         //cat21
-        const msg = messages[i] as Cat21;
+        console.log("999999999999")
+        const msg = items[i] as Cat21;
         createGraphicADSB(msg);
         parseADSBmessage(msg);
       }
 
       const eraseTime = simTime - 10 * 60 * 1000; //min to sec to ms
       if (eraseTime > simStartTime) {
-        while (getTime(messages[j]) * 1000 < eraseTime) {
-          if (messages[j].cat === "Cat10") {
+        console.log("000000000000000000")
+        while (getTime(items[j]) * 1000 < eraseTime) {
+          if (items[j].cat === "Cat10") {
             //cat10
-            const msg = messages[j] as Cat10;
+            console.log("011010101010101010")
+            const msg = items[j] as Cat10;
             if (msg.message_type === "Target Report") {
+              console.log("20202020202020202020")
               if (msg.data_src_id.SIC == "107") {
                 deleteGraphicMLAT(msg);
                 // parseMLATmessage(msg);
@@ -112,7 +124,8 @@
             }
           } else {
             //cat21
-            const msg = messages[j] as Cat21;
+            console.log("3030303030303")
+            const msg = items[j] as Cat21;
             deleteGraphicADSB(msg);
             shortenPath(msg);
           }
@@ -132,10 +145,10 @@
 
     if (i < 0) i = 0;
 
-    while (getTime(messages[i]) * 1000 > simTime) {
-      if (messages[i].cat === "Cat10") {
+    while (getTime(items[i]) * 1000 > simTime) {
+      if (items[i].cat === "Cat10") {
         //cat10
-        const msg = messages[i] as Cat10;
+        const msg = items[i] as Cat10;
         if (msg.message_type === "Target Report") {
           if (msg.data_src_id.SIC == "107") {
             deleteGraphicMLAT(msg);
@@ -144,17 +157,17 @@
         }
       } else {
         //cat21
-        const msg = messages[i] as Cat21;
+        const msg = items[i] as Cat21;
         deleteGraphicADSB(msg);
         deleteADSBmessage(msg);
       }
 
       const eraseTime = simTime - 10 * 60 * 1000; //min to sec to ms
       if (eraseTime > simStartTime) {
-        while (getTime(messages[j]) * 1000 > eraseTime) {
-          if (messages[j].cat === "Cat10") {
+        while (getTime(items[j]) * 1000 > eraseTime) {
+          if (items[j].cat === "Cat10") {
             //cat10
-            const msg = messages[j] as Cat10;
+            const msg = items[j] as Cat10;
 
             if (msg.message_type === "Target Report") {
               if (msg.data_src_id.SIC == "107") {
@@ -164,7 +177,7 @@
             }
           } else {
             //cat21
-            const msg = messages[j] as Cat21;
+            const msg = items[j] as Cat21;
             createGraphicADSB(msg);
             addPath(msg);
           }
@@ -181,6 +194,7 @@
   }
 
   export function playClick() {
+    console.log("ESTOY EN PLAYCLICK")
     play = !play;
     dispatch("switchplay");
     if (seeAllBool) {
@@ -201,7 +215,7 @@
     simTime = 0;
     clearMap();
     clearGraphicsLayer();
-    initializeSimulation(messages);
+    initSimulation(items);
   }
 
   export function forwardsTick() {
@@ -214,21 +228,7 @@
     tickBackSimulation();
   }
   let seeAllBool = false;
-  export function seeAllPlanes() {
-    if (seeAllBool) {
-      seeAllBool = false;
-      clearSeeAll();
-    } else {
-      if (play) {
-        play = false;
-
-        dispatch("switchplay");
-        clearInterval(timer);
-      }
-      seeAllBool = true;
-      seeAll();
-    }
-  }
+  
 
   function getDateCat10(m: Cat10) {
     return new Date(m.time_of_day * 1000);
@@ -250,7 +250,7 @@
 </script>
 
 <div>
-  {#if messages.length > 0}
+  {#if items.length > 0}
     <div class="progress">
       <div id="textDiv">
         {getDateFromMilis(simTime)}
@@ -277,3 +277,4 @@
     </div>
   {/if}
 </div>
+

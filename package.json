@@ -121,7 +121,15 @@
         "nsis"
       ]
     },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "./assets/ast.png",
+      "uninstallerIcon": "./assets/ast.png",
+      "installerHeaderIcon": "./assets/ast.png"
+    },
     "mac": {
+      "icon": "./assets/ast.icns",
       "target": [
         "dmg"
       ],

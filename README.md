@@ -29,7 +29,7 @@
 
 - writeKmlFile: Write a kml file in a separate Worker.
 
-<p align="justify">Within the Renderer thread, the application is organized into files that describe the rendered objects and pages (with the .svelte extension) as well as scripts (with the .ts extension) that handle the logic for the Map and Simulation. The primary Svelte files include App.svelte, which defines the general structure and Map component, ExpandableTable.svelte for the table view, and Parameters.svelte for the performance parameters view. On the script side, map.ts is responsible for initializing the map, graphicsLayer.ts manages the logic for 3D objects and layer management, groundLayer.ts handles ground markers and layer management, and areaLayer.ts defines ground areas. Additionally, Simulation.svelte is responsible for the simulation logic and rendering associated controls. Some of the workload is offloaded to Web Workers to ensure smoother operation and prevent blocking the main thread during computationally intensive tasks.</p>
+<p align="justify">Within the Renderer thread, the application is organized into files that describe the rendered objects and pages (with the .svelte extension) as well as scripts (with the .ts extension) that handle the logic for the Map and Simulation. The primary Svelte files include App.svelte, which defines the general structure and table component and map.svelte for the map view. On the script side, map.ts is responsible for initializing the map, graphicsLayer.ts manages the logic for 3D objects and layer management, groundLayer.ts handles ground markers and layer management, and areaLayer.ts defines ground areas. Additionally, Simulation.svelte is responsible for the simulation logic and rendering associated controls. Some of the workload is offloaded to Web Workers to ensure smoother operation and prevent blocking the main thread during computationally intensive tasks.</p>
 
   <h4>
 Used software and libraries</h4>
@@ -51,23 +51,32 @@ In addition, other libraries used include Geolib for coordinate conversion and g
   <p>Download the <a href="https://drive.google.com/drive/folders/17WjaB2wWBFsYP7G5R81U3n9D2PKpx2aH?usp=sharing" >executable</a> for Windows</p>
   <h5>First steps</h5>
   <p align="justify">On the home page you can visualize some of the usage tips of the program and the team members.</p>
+  <br/>
+  <img src="https://github.com/nigati/Asterix-decoder/tree/main/assets/home.png" width = 50%>
   <p align="justify">To begin, one has to load a file using the Load File menu. Pressing the button will open a prompt to select a file. Files must have .ast extension</p>
     <br>
+  <img src="https://github.com/nigati/Asterix-decoder/tree/main/assets/load.png" width = 50%>
 <h5>Explore the table</h5>
   <p align="justify">The Web Application provides a range of information through the data items of the messages. Here are some of the capabilities it offers:</p>
+  <br/>
+  <img src="https://github.com/nigati/Asterix-decoder/tree/main/assets/table.png" width = 50%>
 <p align="justify">
-Filter by category, system, and message type: You can apply filters to view messages based on their category, system, or message type. This allows you to focus on specific subsets of data.
+Filter by category, system: You can apply filters to view messages based on their category or system. This allows you to focus on specific subsets of data.
 </p>
+    <img src="https://github.com/nigati/Asterix-decoder/tree/main/assets/filter.png" width = 50%>
+
 <p align="justify">
 Access to detailed information: Some data items have additional information. You can click the button to expand a row and visualize extra information.
 </p>
+      <img src="https://github.com/nigati/Asterix-decoder/tree/main/assets/expand.png" width = 50%>
+
   <h5>Map and simulation</h5>
   <p align="justify">The simulation controls in the Web Application provide various functionalities:
+      <img src="https://github.com/nigati/Asterix-decoder/tree/main/assets/map.png" width = 50%>
 
 -Start, stop, and restart the simulation: Allows you to control the execution of the simulation.
 -Move forwards and backwards: Enables navigation through different time points in the simulation.
 -Change the speed of the simulation time: Adjusts the playback speed of the simulation.
--Choose the type of traffic to display: Allows you to select the specific type of traffic (e.g., airplanes) you want to see in the simulation.
 -Click on airplane paths for information: By clicking on the path of an airplane, you can access the main information contained in its message at that particular moment.
 These simulation controls give users the ability to interact with the application, customize their viewing experience, and access detailed information about individual airplanes. Additionally, the option to view the airplanes in 3D enhances the visual representation of the simulation.
 </p>

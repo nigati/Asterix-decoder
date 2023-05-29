@@ -259,22 +259,7 @@ export function loadGroundLayer(map: ArcGISMap) {
   constLayer.elevationInfo = { mode: "on-the-ground" };
 
   constLayer.addMany([graphicsmr, graphicmlat]);
-  // let sketch = new Sketch({
-  //   layer: constLayer,
-  //   view: view,
-  // });
 
-  // sketch.on("create", function (event) {
-  //   // check if the create event's state has changed to complete indicating
-  //   // the graphic create operation is completed.
-  //   if (event.state === "complete") {
-  //     // remove the graphic from the layer. Sketch adds
-  //     // the completed graphic to the layer by default.
-  //     console.log(event.graphic);
-  //   }
-  // });
-
-  // view.ui.add(sketch, { position: "top-right" });
 
   map.add(groundLayerSmr);
   map.add(groundLayerMlat);

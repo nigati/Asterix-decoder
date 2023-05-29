@@ -405,12 +405,7 @@ export function deletePlane(plane: Plane) {
   planeMap.delete(plane.target_address);
 }
 
-//only call this from exterior
-// export function addPlane(plane: Plane) {
-//   if (planeMap.has(plane.id)) {
-//     graphicsLayer.add(planeMap.get(plane.id)!.graphic!);
-//   } else createPlane(plane);
-// }
+
 
 function removePlane(plane: Plane) {
   if (planeMap.has(plane.target_address)) {

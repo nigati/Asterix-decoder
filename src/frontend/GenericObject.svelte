@@ -6,7 +6,6 @@
 
 <script lang="ts">
   export let obj: any;
-  //  const unwanted = ["id", "message_type", "csv"];
   let objKeys = Object.keys(obj);
   objKeys = objKeys.sort();
 
